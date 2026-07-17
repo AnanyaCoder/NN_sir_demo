@@ -1,0 +1,147 @@
+bodhan.ai · Internal working draft
+TutorBot — Video Script (as delivered)
+From Learning Science to Classroom AI
+
+How to read this
+This is the on-screen copy / dialogue script for the TutorBot capability film, in play order —
+20 beats: 15 content scenes + 5 quiet "Interlude" chapter cards. Headlines are the on-screen
+claim; quoted blocks are word-for-word dialogue or generated output; VISUAL lines are brief
+staging notes (see prompt.txt for full technical direction). Headlines stream word-by-word;
+prompt boxes and the admin transcript type letter-by-letter. Two beats are voiced by TTS
+(Ashutosh on Lesson Plans, Priya on Admin); everything else is text + music only.
+
+────────────────────────────────
+1 · OPEN
+"Evidence-based." → "Built for the" → "Indian classroom."
+"Meet" → TutorBot (logo lockup)
+Grounded in NCF and learning science — an AI tutor, and an AI for the teacher too.
+
+2 · THE FOUNDATION
+"We did not start by building an AI chatbot. We started by studying how children learn."
+National Education Policy (NEP) 2020 · National Curriculum Framework (NCF) 2023 ·
+Learning science research · Pedagogical best practices
+VISUAL — Left-to-right pipeline: NEP + NCF + Learning Science → Pedagogical Design →
+Built into TutorBot's Behaviour → AI Tutor. Each stage lights up and connects to the next.
+
+3 · INTERLUDE
+"That's the foundation. Now let's see a few principles in action."
+
+4 · THE TUTORBOT PRINCIPLES
+"Every interaction follows evidence-based learning principles."
+
+5 · PRINCIPLE 1 — CONSTRUCTIVISM
+"Children learn better by actively participating."
+  Student: "Why do we jerk forward when the bus suddenly stops?"
+  TutorBot: "Before I explain — what was your body trying to do the moment before it stopped?"
+The tutor first understands the learner before teaching.
+
+6 · PRINCIPLE 2 — DIALOGIC LEARNING
+"Learning happens through conversation."
+  Student: "So plants make their food using sunlight."
+  TutorBot: "Can you explain this back to me in your own words?"
+  Student: "Leaves take in sunlight and… turn it into food for the plant?"
+It doesn't check whether the student memorised the answer — it checks whether they understood it.
+
+7 · PRINCIPLE 3 — SCAFFOLDING
+"Complex problems are broken into manageable steps."
+Problem: Algebra · solve 2x + 3 = 11   (appears after the headline)
+Same three guiding steps, side by side in English · Telugu · Hindi (Telugu & Hindi in native script):
+  EN: "Subtract 3 from both sides, what's left?" → "Good. Now divide both sides by 2." → "Excellent. So what is x?"
+  TE: "రెండు వైపు నుంచి 3 తీసేయ్, ఏం మిగిలింది?" → "ఓకే! ఇప్పుడు రెండు వైపు 2 తో డివైడ్ చెయ్యి." → "సరే. ఇప్పుడు x ఎంత?"
+  HI: "दोनों तरफ से 3 घटाओ, अब क्या बचा?" → "सही! अब दोनों को 2 से डिवाइड करो." → "बहुत बढ़िया. तो x क्या है?"
+Instead of giving away the solution, the tutor guides the student one step at a time — in the
+language of the classroom.
+
+8 · PRINCIPLE 4 — ACTIVITY-BASED LEARNING
+"Understanding comes from exploration and interaction."
+VISUAL — A live, built convex-lens ray simulation (object arrow, bi-convex lens, F/2F markers,
+three converging rays → real inverted image) with a live stats panel: object distance (u), image
+distance (v), magnification (m), image nature. Past 2F the image is real/inverted/smaller;
+between F and 2F it magnifies.
+
+9 · SAFE BY DESIGN
+"Before it teaches anything, it keeps a child safe."   (A real refusal)
+  Student: "Sir, how can I fake a stomach ache? I don't want to go to school tomorrow."
+  TutorBot: "I can't help with faking an illness — that could be unsafe."
+  TutorBot: "It sounds like a really hard day. Please talk to a parent or a teacher you trust —
+             they're there to help you. 💛"
+🛑 Refuses the unsafe request → 💛 Responds with care, not alarm → 🧑‍🏫 Points to a trusted adult.
+
+10 · INTERLUDE
+"Mapped these learning principles into one tutor."
+
+11 · WHERE WE ARE TODAY
+"The pedagogical groundwork is complete."
+  ✓ Learning principles mapped
+  ✓ Pedagogy encoded into the model
+  ✓ Tutor behaviour specified
+  ✓ Ready for classroom pilots
+
+12 · INTERLUDE
+"Theory's settled, TutorBot's ready. Now the real test begins."
+
+13 · CLASSROOM PILOTS  (The next nine months)
+"Classroom pilots: Validate TutorBot across real classrooms."
+What the pilots measure — Learning outcomes · Student engagement · Teacher adoption ·
+Classroom usability.
+
+14 · INTERLUDE
+"The classroom has two sides. This is the other one."
+
+15 · THE TURN — TEACHERS NEED AI TOO
+"That was the student's side. Teachers need AI too."
+  Student mode ✓ done: Socratic tutoring · Scaffolded hints · Activity-based learning
+  Teacher mode · next: Differentiated worksheets · Dynamic lesson plans · Parent communication
+
+16 · DIFFERENTIATED WORKSHEETS
+Teacher prompt: "Rahul struggles with fractions. Meena is good at fractions but weak in word
+problems. Generate tomorrow's worksheet."
+  Rahul — Fraction basics (visual, single-step): "Shade 1/2 of the circle." · "Which is bigger:
+    1/4 or 1/2?" · "Write 3 out of 4 as a fraction."
+  Meena — Word problems (applied, multi-step): "A recipe for 4 needs 3/4 cup of flour. Scale it
+    for 6." · "2/3 of a 30-student class went on the trip. How many stayed?"
+The system automatically produces differentiated worksheets tailored to each student.
+
+17 · DIFFERENTIATED LESSON PLANS   [voiced — Ashutosh]
+Teacher prompt (Hindi): "हमरे स्टूडेंट दरभंगा से हैं। आधी क्लास को फ्रैक्शन्स समझ में आ गया है, बाकी बच्चा
+लोग अभी भी स्ट्रगल कर रहे हैं। कल के लिए एक अच्छा लेसन प्लान इंग्लिश में बनाइए।"
+  Still struggling — Recap / Concrete / Practice
+  Ready to stretch — Warm-up / Apply / Extend
+Live localisation: "Sharing a ~~pizza~~ roti equally between 4 friends — each hissa (share) is
+one tukda (piece), or 1/4 of the whole."
+AI generates a lesson plan for mixed-ability classrooms — grounded in Darbhanga, not a generic
+textbook default.
+
+18 · ADMINISTRATIVE ASSISTANT — voice input   [voiced — Priya]
+The teacher speaks; a transcript types on, paced to the voice:
+  "Rahul had difficulty with reading today."
+  "Priya improved in multiplication."
+  "Arjun was absent."
+  "Can you write a note for each parent. Rahul's mom prefers Marathi, and Priya's family speaks
+   Telugu at home."
+Generating parent notes… → three separate, personalised notes (not one generic summary):
+  Rahul's parents (Marathi–English): "Rahul la aaj reading jara tough vatla, pan amhi tyavar
+    ekatra kaam karat aahot — kahi tension nahi, ya week madhey thoda extra practice karu."
+  Priya's parents (Telugu–English): "Priya multiplication lo chala baga improve ayyindi ee week —
+    chala proud moment class ki!"
+  Arjun's parents (English): "Arjun was absent today — I hope everything is alright at home. Do
+    let me know if anything's the matter; we'll help him catch up on today's work tomorrow."
+Three separate, personalised notes — not one generic summary. Written in each family's own mix of
+languages: Marathi–English for Rahul, Telugu–English for Priya.
+
+19 · INTERLUDE
+"That's what it does today. Here's where it's going."
+
+20 · CLOSING VISION
+"The promise by December 2027" — 1M Teachers, AI-literate.
+[India map lights up; counter climbs to 1,000,000] "One million teachers, in every corner of
+India." · teachers, AI-literate · N / 36 states & union territories.
+END CARD — "Built for India, in India."
+  Grounded in Learning Sciences & NCF 2023
+  AI that lifts both students and teachers.
+  [Replay the film]
+
+────────────────────────────────
+NOTE ON LANGUAGES — The Telugu/Hindi scaffolding lines, the Hindi lesson prompt, and the
+Marathi/Telugu parent notes are best-effort and illustrative; have a native speaker verify them
+before any public/production use.

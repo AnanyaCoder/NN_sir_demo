@@ -1,0 +1,124 @@
+bodhan.ai · Internal working draft
+TutorBot — Capability Film Storyboard
+Draft — mirrors the AI4B-Transcribe storyboard format
+
+How to read this
+Each row is one beat of the film — the narration/on-screen text is the copy as it will appear, the Visual column is the stage direction for what's on screen, and Audio is music/SFX guidance. Rows flow in order; this is one continuous film, not separate teasers.
+
+Text-to-visual timing follows the same default as the AI4B-Transcribe film: the line appears first to establish the claim, then the visual/demo rolls in underneath it while the text shrinks to a caption. Scenes 2 and 7 (the withheld-answer beat and the MCQ beat) are quick one-liners where text and visual can land together.
+
+Scenes 1–8 are Student mode. Scene 9 is the turn. Scenes 10–13 are Teacher mode. Scene 14 closes. Platform and launch-date specifics are placeholders — fill in once confirmed; everything else is draftable now.
+
+Demo topics in Scenes 2–8 are drawn one-per-beat from TutorBot's current live subject coverage — Photosynthesis, Algebra, Geometry, Newton's Motion, Force & Friction, Human Body, Light — so the film doesn't imply broader coverage than what's actually shipped. No topic repeats across the Student-mode beats.
+
+Scenes 5, 6, and 8 now describe the actual product UI rather than a generic placeholder: the drag-to-explore interaction, the Atlas constellation graph (clustered nodes, mastery bar, zoom/reset controls), and the escalating hint-card format ("HINT – 1 · GENTLE NUDGE" through Hint 3) are all pulled from real captures. Whoever storyboards the actual screen recording should use these as the shot reference rather than re-imagining the UI.
+
+Rows shaded grey under a scene are added multilingual examples — one code-mixed language demo per Student-mode learning-science beat (Hindi, Telugu, Kannada, Bengali, Konkani), so the film's core moments read as genuinely multilingual, not just English with a language-toggle claim. English is the base narration throughout. These lines are illustrative for storyboard purposes and should be checked with a native speaker of each language before use in production copy.
+
+Scene-by-Scene Storyboard
+#
+BEAT
+NARRATION / ON-SCREEN TEXT
+VISUAL
+AUDIO / MUSIC
+1
+Open
+TutorBot. One tutor. Every student. Every subject. Built for NCF 2023 and NEP 2020 — not retrofitted for it afterward.
+Clean stat card, logo lockup
+Instrumental open, minimal
+2
+The withheld answer — Photosynthesis
+Notice something? We didn't answer the question. "We asked one back." A student asks why plants need sunlight to make food — TutorBot doesn't explain. It asks what happens to a plant kept in the dark for a week.
+Chat bubble: student asks "Why do plants need sunlight to make food?"; a beat of silence; then TutorBot's question appears instead: "What do you think happens to a plant kept away from sunlight for a week?"
+Builds gently under the pause
+3
+Socratic demo — Algebra
+A student stuck solving 2x + 3 = 11. TutorBot doesn't solve it. It asks what should happen to both sides of the equation first — then the next question, and the next — until the student isolates x themselves.
+Chat log plays out in real time, each TutorBot turn highlighted as a question, not an answer, ending on the student's own correct line: x = 4
+Continues, understated
+MULTILINGUAL EXAMPLE
+Hindi–English code-mixed
+Student: "Sir, 2x + 3 = 11 kaise solve karu?"
+TutorBot: "Pehle batao — dono taraf se 3 kam karne se kya milega?"
+Student: "2x = 8."
+TutorBot: "Ab dono taraf 2 se divide karo to?"
+Student: "x = 4!"
+Same Socratic beat as the English chat log — the question comes back, never the answer.
+4
+Rooted in IKS — Geometry
+But guiding isn't only asking questions. It's also showing a student where the idea came from. The Baudhayana Shulba Sutra stated the diagonal-of-a-rectangle relationship centuries before Pythagoras — and that's exactly where the lesson begins.
+Split screen: the Shulba Sutra verse on the rectangle's diagonal dissolving into the NCERT Class 9 lesson on the Pythagoras theorem that uses it
+Theme shifts — warmer, more rooted
+5
+Active learning — Newton's Motion
+Some things you don't explain. You let a student play with them. A student drags the incline steeper and watches a ball's speed change on its way down.
+The product's real drag-to-explore pattern: a labelled ramp diagram with a draggable incline-angle arrow; as it moves, a live stats row updates underneath (angle, speed, time to bottom), and a short tip callout explains what just changed — same structure as the in-product Light simulations, applied here to motion
+Playful, curious register
+MULTILINGUAL EXAMPLE
+Telugu–English code-mixed
+Student: "Idi angle penchite emavutundi?"
+TutorBot: "Try chesi choodu — slider ni easy ga marchu, speed ela marutundo choodu."
+Student: "Oh, angle perigithe speed kuda perigindi!"
+Same drag-and-observe beat, spoken the way a student would actually ask it.
+6
+Atlas — the concept graph — Force & Friction
+Every student gets stuck somewhere different. TutorBot knows exactly where. A student stuck on a friction problem is quietly traced back to an unresolved "Normal Force" node from two lessons ago.
+The real Atlas UI: a starfield concept map titled "The Friction Constellation," nodes rendered as stars linked by orange lines, grouped into labelled clusters (Foundations, Force Basics, Friction Types, Applications) with a colour-coded legend, a mastery bar reading "11 / 28 mastered · 39%" top-right, zoom and reset controls in the corner. Camera pushes in as "Normal Force" lights up and a line traces forward to "Friction on an Incline"
+Builds toward a small resolve
+MULTILINGUAL EXAMPLE
+Kannada–English code-mixed
+Student: "Idu friction problem nange artha aagta illa."
+TutorBot: "Nimma friction problem, normal force node ge connect aagide — adna revise madona."
+Same backward trace along the concept graph, same unresolved node surfaced.
+7
+Formative MCQs — Human Body
+A wrong answer isn't the end of the question. It's the start of the next one. A student marks the lungs as the organ that pumps blood — wrong, but not random — so the next question goes straight at that mix-up.
+MCQ "which organ pumps blood?" answered "Lungs," shown wrong, then a diagnostic follow-up question appears addressing the heart-versus-lungs confusion
+Quick, confident beat
+MULTILINGUAL EXAMPLE
+Bengali–English code-mixed
+Student picks "Lungs" for "which organ pumps blood?"
+TutorBot: "Tumi ei bhul ta prai kori — kintu heart ar lungs-er kaj eki na. Eta niye ekta question dekhi."
+Same one-liner beat: wrong answer, immediate diagnostic follow-up.
+8
+Scaffolded hints — Light
+We don't hand over the ladder. We hand over the first rung. A student can't explain why a pencil looks bent in a glass of water — the first hint doesn't mention refraction, it just asks what changes when light moves from air into water.
+The real hint-card UI: the question sits in a TutorBot chat bubble, a peach-tinted card slides in underneath it labelled "HINT – 1 · GENTLE NUDGE" with an orange left border, reminding the student what they already know and ending on a question, never an answer. If the student is still stuck, "HINT – 2" appears with a sharper nudge, then "HINT – 3" with the full explanation — only as a last resort
+Continues, same energy
+MULTILINGUAL EXAMPLE
+Konkani–English code-mixed
+Student: "Mhaka kalona pencil vakud kityak dista glass antlyan."
+Hint card: "HINT – 1 · GENTLE NUDGE — Amchi convex lens vishim zaali ti utram yaad kaddat? Ata light air thaun water bhitor gele tor kitem badta?"
+Same first-rung-only beat, same escalating three-hint structure as the real product.
+9
+Turn to teachers
+All of this holds up a mirror to the classroom itself. Meet the other side of TutorBot — built for the teacher's evening, not just the student's afternoon.
+Scene transitions from a student's device to a teacher's desk at night, papers and a laptop
+Theme shift — quieter, more grounded
+10
+Lesson plans
+A blank page tonight becomes a complete lesson by the time the tea's gone cold.
+Typing prompt on screen; a full 5E lesson plan assembles underneath it — objective, hook, activities, closing check
+Continues, steady build
+11
+Differentiated worksheets
+One topic. Four versions — struggling, standard, stretch, and home language. Every student in the class gets something built for them.
+Four worksheet cards fan out from a single prompt, each labelled by level
+Builds, slightly more energetic
+12
+Local context
+Pizza and sandwiches become rice, dal, roti. The worksheet stops being generic and starts being theirs.
+Before/after text swap animation on a worksheet line, textbook phrasing replaced by rural-Telangana phrasing
+Continues, same energy
+13
+Mistake or misconception
+A wrong answer on its own tells you nothing. The same wrong answer, six times in a row, tells you everything.
+A worksheet with several answers marked incorrect; connecting lines animate between them, revealing a shared pattern
+Slows down, more serious register
+14
+Close
+AI drafts. AI suggests. AI saves time. Teacher decides. Teacher verifies. Teacher teaches. [PLATFORM / HOSTING DETAILS — TBD] [LAUNCH DATE — TBD]
+End card: TutorBot logo, tagline, platform lockup placeholder
+Resolves on the beat
+
+

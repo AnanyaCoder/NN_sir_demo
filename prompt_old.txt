@@ -1,0 +1,134 @@
+You are building a browser-based demo video for TutorBot (by bodhan.ai) — an animated, timed, autoplaying HTML/CSS/JS experience that plays like a short explainer film, not a static page.
+
+STEP 0 — ORIENT YOURSELF FIRST
+Before writing anything:
+1. Open and inspect `reference.html` in this repo. Match its visual language as closely as possible: layout system, spacing scale, typography, color palette, animation/easing style, and how it times text-then-visual reveals. Treat it as the design system of record — don't invent a new one.
+2. Inventory everything in `resources/` (screenshots of hints, MCQs, the Atlas concept graph, homework review, etc.). List what you find and note which section below each image best supports. Use these as real image assets — don't hand-recreate actual product UI from scratch when a matching screenshot exists.
+3. For beats that have no matching screenshot (chat exchanges, diagrams, prompt-to-output demos), build lightweight mocked-up UI in HTML/CSS that matches the real product's look: warm orange/peach accent color, clean sans-serif type, rounded cards, the "Bodhan" origami-bird mark, orange left-border callout cards for hints/tutor turns. Pull exact colors/fonts from the screenshots and reference.html rather than guessing.
+
+STEP 1 — BUILD REQUIREMENTS
+- Single-page app, vanilla HTML/CSS/JS (no build step) unless reference.html already establishes a framework/toolchain — if so, follow it.
+- Autoplay by default, timed like a video: each beat holds long enough to read, then transitions to the next. Include play/pause and a scrubber/progress bar along the bottom, plus controls to jump between the four main sections.
+- Default pacing pattern: the claim/headline text appears first, then the supporting example/visual rolls in underneath it while the text settles into a caption. Chat-style exchanges (Student/Tutor) should type on turn by turn rather than appear all at once — that's the clearest way to sell "this is a conversation, not a script."
+- Include a persistent section index (the 4 sections + closing, listed below) so a viewer can jump straight to e.g. "Section 2 — The Principles."
+- Audio: leave hooks for background music/SFX per section (a `data-audio-cue` attribute or similar is enough) but don't block on producing real audio — build muted-by-default with a mute/unmute toggle.
+- Responsive down to at least a 1280x720 presentation size; this will be screen-recorded for the final "video," so prioritize looking correct at that resolution.
+- Keep transitions simple and consistent (crossfade + slight slide) — don't over-animate; the product screenshots and chat exchanges should read clearly, not fight with the motion.
+- The voice input in Section 4/B3 should be a convincing mocked animation (waveform + pre-scripted transcript typing on), not a real microphone/speech-recognition integration — this is a recorded demo, not a live app, so don't request mic permissions or wire up the Web Speech API.
+
+STEP 2 — CONTENT
+Build these four sections plus the closing vision, in order, as one continuous film.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — THE FOUNDATION (What we built)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Headline: "We did not start by building an AI chatbot. We started by studying how children learn."
+Supporting list (reveal as three short tags, not a bullet wall): National Curriculum Framework (NCF) · Learning science research · Pedagogical best practices
+Line: "We mapped these together and translated them into a structured tutoring framework."
+Visual: A simple left-to-right pipeline animation:
+  NCF + Learning Science  →  Pedagogical Design  →  TutorBot System Prompt  →  AI Tutor
+Each stage should appear as a card that lights up and connects to the next via an animated arrow/line — this is the section's core visual and should feel like the foundation the rest of the film builds on.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — THE TUTORBOT PRINCIPLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Headline: "Every interaction follows evidence-based learning principles."
+Present as four sub-beats, each: principle name + one-line definition + a concrete example. Use a consistent card/label treatment across all four so they read as one system, not four different ideas.
+
+Principle 1 — Social Constructivism
+Definition: Children learn better by actively participating.
+EExample (type on as a chat exchange):
+  Student: "Why do we jerk forward when the bus suddenly stops?"
+  Tutor: "Before I explain — what was your body trying to do the moment before it stopped?"
+Caption line: "The tutor first understands the learner before teaching."
+
+Principle 2 — Dialogic Learning
+Definition: Learning happens through conversation.
+Example:
+  Tutor: "Can you explain this back to me in your own words?"
+Caption line: "Rather than checking whether the student memorized the answer, it checks whether they understood it."
+
+Principle 3 — Scaffolding
+Definition: Complex problems are broken into manageable steps.
+Example — animate as a vertical step sequence, each line appearing only after the last:
+  "If we subtract 3, what happens?"
+   ↓
+  "Great. Now divide by 2."
+   ↓
+  "Excellent. What's the final answer?"
+Caption line: "Instead of giving away the solution, the tutor guides the student one step at a time."
+Visual note: if resources/ has a hint-card screenshot (e.g. "HINT – 1 · GENTLE NUDGE" style card), use the real screenshot here as the visual proof point alongside the animated step sequence.
+
+Principle 4 — Activity-Based Learning
+Definition: Understanding comes from exploration and interaction.
+Visual: An interactive simulation the student can manipulate and observe outcomes from, instead of passively reading explanations. Use a real simulation/interaction screenshot from resources/ if one exists (e.g. the drag-to-explore or Atlas-style interaction); otherwise mock up one clearly interactive example from this list:
+  - Move planets to understand seasons
+  - Mix colors
+  - Change fractions visually
+  - Build electric circuits
+Pick whichever example best matches an available screenshot; if none match, build the simplest one (color mixing or fraction visualization) as a lightweight interactive mock.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — WHERE WE ARE TODAY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Headline: "The pedagogical groundwork is complete."
+Present as a checklist that ticks off one item at a time (not all at once):
+  ✓ Learning principles mapped
+  ✓ System prompt designed
+  ✓ Tutor behaviour specified
+  ✓ Ready for classroom pilots
+Visual: Clean checklist card, each item's checkmark animating in with a small satisfying beat — this section is short and should feel like a confident pause before the next section's forward-looking energy.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — THE NEXT NINE MONTHS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Sub-beat A — Classroom Pilots
+Headline: "Focus: Classroom Pilots — validate TutorBot across real classrooms."
+Measure (reveal as four tags): Learning outcomes · Student engagement · Teacher adoption · Classroom usability
+
+Sub-beat B — Teacher AI
+Headline: "Teachers need AI too."
+
+  B1. Differentiated Worksheets
+  Teacher prompt (typed into a prompt box, like a real input):
+    "Rahul struggles with fractions. Meena is good at fractions but weak in word problems. Generate tomorrow's worksheet."
+  Output: two worksheet cards fan out from the single prompt, visibly different (one focused on fraction basics, one on word problems).
+  Caption: "The system automatically produces differentiated worksheets tailored to each student."
+
+  B2. Differentiated Lesson Plans
+  Teacher prompt:
+    "Half my class understands decimals. The other half is still struggling. Plan tomorrow's lesson."
+  Output: a lesson plan assembling underneath the prompt, visibly split into two tracks/paths for the two ability groups.
+  Caption: "AI generates a lesson plan that supports mixed-ability classrooms."
+
+  B3. Administrative Assistant (voice input)
+  Open on a mic button/voice UI, not a text box — this beat should read as "the teacher just talks, the AI does the rest."
+  Sequence:
+    1. Teacher taps a mic icon; a waveform animates while "speaking."
+    2. A live transcript types on underneath the waveform, line by line, as if being transcribed in real time:
+       "Rahul had difficulty with reading today."
+       "Priya improved in multiplication."
+       "Arjun was absent."
+    3. Once the transcript settles, it visibly hands off to the AI (e.g. waveform/mic fades, a small "generating" state plays briefly).
+    4. Output: three separate personalized parent write-up cards appear, one per student — not a single generic summary. Each should read like a warm, specific note a teacher would actually send, not a template with names swapped in:
+       - Rahul's card: acknowledges the reading difficulty gently, frames it as something being worked on, no alarm tone.
+       - Priya's card: highlights the multiplication improvement specifically and positively.
+       - Arjun's card: notes the absence plainly and neutrally, inviting a quick check-in if needed.
+    5. Render at least one of the three (pick whichever reads most naturally) in genuine code-mixed language (e.g. Hindi-English) rather than plain English, to demonstrate multilingual capability on real generated output — this is the one place in the film that should explicitly show code-mixed output, so don't render everything in plain English.
+  Caption: "Teachers speak naturally. TutorBot writes what each parent actually needs to hear."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CLOSING VISION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Headline: "The promise by December 2027"
+Present as four short, weighty lines, each landing on its own beat (not a bullet list read all at once):
+  One million teachers AI-literate.
+  Evidence-based AI tutors in classrooms.
+  AI that supports both students and teachers.
+  Grounded in NCF and learning science, validated through classroom pilots, and built for India.
+Visual: End card — TutorBot logo, tagline, dark or high-contrast treatment so it reads as a definitive close rather than another content section.
+
+STEP 3 — DELIVERABLE
+- All code in a clean, organized structure (e.g. index.html, styles.css, script.js, plus the resources/ images referenced by relative path).
+- Make sure it runs by simply opening index.html — no server/build step required, unless reference.html's own approach requires one (match it if so).
+- After building, do a self-check: step through all four sections plus the close, confirm every resources/ screenshot got placed somewhere sensible, no section is left as an obvious placeholder box, and the pacing feels like a confident short film rather than a slideshow of bullet points.

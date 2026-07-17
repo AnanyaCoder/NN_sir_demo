@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TutorBot — Evidence-Based, Built for India</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23FFF3EC'/%3E%3Cpath d='M22 60 L50 30 L72 44 L52 50 L64 70 L44 58 L30 72 Z' fill='none' stroke='%23EF6B35' stroke-width='5' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-scene="gate">
+ <div id="screen"><!-- fixed 16:9 stage, scaled to fit any viewport so the layout never reflows -->
+  <div class="grain" aria-hidden="true"></div>
+  <div id="wipe" class="wipe" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <!-- ===== Start gate (also satisfies the browser autoplay gesture) ===== -->
+  <div id="gate" class="gate">
+    <div class="gate-aurora" aria-hidden="true"></div>
+    <div class="gate-inner">
+      <span class="bird bird-lg" aria-hidden="true">
+        <img class="bmark" src="images/bodhan_mark.png" alt="Bodhan" />
+      </span>
+      <div class="gate-eyebrow" id="gateEyebrow">Capability Film · bodhan.ai</div>
+      <h1 class="gate-title" id="gateTitle">One tutor. Every student.</h1>
+      <button id="startBtn" class="start-btn" disabled>Loading…</button>
+      <p class="gate-foot">▶ This plays like a short film — sound on. Space = pause · ← → = skip scene</p>
+    </div>
+  </div>
+
+  <!-- ===== fixed brand mark ===== -->
+  <div class="brand-fixed" aria-hidden="true">
+    <span class="bird">
+      <img class="bmark" src="images/bodhan_mark.png" alt="Bodhan" />
+    </span>
+    <span class="brand-text">Tutor<b>Bot</b></span>
+  </div>
+
+  <!-- ===== Full-screen stage ===== -->
+  <main class="stage" id="stage" hidden>
+    <div class="visual-layer" id="visualLayer"><!-- per-scene backdrop --></div>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <div class="caption-layer" id="captionLayer">
+      <div class="cap-kicker" id="capKicker"></div>
+      <h2 class="cap-title" id="capTitle">—</h2>
+      <div class="cap-sub" id="capSub"></div>
+      <div class="cap-chips" id="chips"></div>
+      <div class="cap-extra" id="sceneExtra"></div>
+    </div>
+
+    <!-- multilingual toggle (shown only on scenes that carry an example) -->
+    <button class="ml-toggle" id="mlToggle" hidden>🌐 <span id="mlLabel">multilingual example</span></button>
+
+    <div class="rail" id="rail" aria-hidden="true"><span class="rail-fill" id="railFill"></span></div>
+    <div class="chapter" id="chapter" aria-hidden="true"></div>
+  </main>
+ </div><!-- /#screen -->
+
+  <audio id="music" preload="auto" loop src="audio/music.mp3"></audio>
+  <audio id="clipLessons" preload="auto" src="audio/tts_ashutosh.mp3"></audio>
+  <audio id="clipAdmin" preload="auto" src="audio/tts_priya.mp3"></audio>
+
+  <script src="reel.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

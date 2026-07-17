@@ -1,0 +1,209 @@
+TutorBot — Capability Film · build spec of record
+(reflects the delivered film: film_MKfeedback1/ → TutorBot_Film_MKfeedback1.html)
+
+This is a browser-based demo video for TutorBot (by bodhan.ai): an animated, timed,
+autoplaying HTML/CSS/JS experience that plays like a short explainer film, not a static page.
+On-screen text + product UI carry the story; a music bed plays underneath, and two short TTS
+voice clips play on the teacher-tool beats (see below). It runs as ONE continuous film of
+20 beats: 15 content scenes + 5 quiet "Interlude" chapter cards between the major sections.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 0 — ORIENT YOURSELF FIRST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Engine: forked from the AI4B-Transcribe capability-film engine (a `Reel` sequencer that
+   walks scenes; each scene runs a keyframe timeline for video-style staged reveals). Visual
+   language — warm orange/peach product-native look, rounded cards.
+2. Type system: UI face is **Inter** (weights 300–800, bundled offline). Indian scripts render
+   in **Noto Sans <script>** (Devanagari, Telugu, …). A 4-tier type scale drives everything —
+   display / headline / body / label — with matching weights (mirrors the team design tokens).
+3. Real assets live in `Resources/` (capital R):
+   - `Bodhanlogo.png` — official Bodhan origami-swan mark. Keyed to transparent; saved as
+     `images/bodhan_mark.png`. Used at the gate, fixed brand mark, chat avatars, and end card.
+     (On the dark end card the mark is tinted white to stay visible.)
+   - `child_safety.png` and other product captures (`LessonPlan1.png`, `hint.png`,
+     `interactive_convexlens.png`, …) — inspiration for LIVE mocks; do NOT just show a screenshot.
+   - `film/assets/india.svg` — per-state paths (data-state) for the closing map.
+4. Audio:
+   - Music bed → `audio/music.mp3` ("Saffron Ledger"). The earlier Sitar bed is kept as
+     `audio/music_Sitar.mp3` if a swap is ever wanted. Music ducks under the interactive beats.
+   - TTS voice clips (inlined into the portable build):
+       `audio/tts_ashutosh.mp3` (Ashutosh) — plays on the Lesson-plans beat.
+       `audio/tts_priya.mp3`   (Priya)   — plays on the Admin beat; the transcript typing is
+       paced to this ~14.6 s clip. Music fades to ~6 % while a voice clip plays, then returns.
+5. For beats with no matching screenshot (chats, pipeline, prompt→output, voice admin, the lens
+   sim, the map) build lightweight LIVE mocked-up UI in HTML/CSS/SVG that matches the product look.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — BUILD REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Single-page app, vanilla HTML/CSS/JS, no build step. Editable copy/timing lives in `reel.js`;
+  scene builders + sequencer in `app.js`; per-scene themes in `styles.css`. `bundle.py` inlines
+  every asset (music, TTS clips, fonts, images, india.svg) into one portable
+  `../TutorBot_Film_MKfeedback1.html` that opens by double-click, no server.
+- Autoplay, timed like a video. Controls: click / Space = pause · ← → = skip scene · Replay
+  button on the end card. A chapter readout ("n / 20 · <name>") sits bottom-right; the Interlude
+  cards read "n / 20 · Interlude".
+- FIXED 16:9 CANVAS (locked layout): the whole film lives inside a `#screen` container that is
+  always 16:9, sized to fit the viewport and centred (letterbox/pillarbox bars on off-16:9
+  displays). ALL internal sizing uses container-query units (cqw/cqh) that resolve against this
+  canvas — so every element holds its exact relative position and size on any browser or display.
+  The layout must NOT reflow with window aspect ratio.
+- Per-slide reveal pattern (every content slide follows this):
+  1. the short LABEL (kicker: section/principle name) lands first;
+  2. the HEADLINE streams in WORD-BY-WORD (token-style, with a caret) — never letter-by-letter;
+  3. a brief pause;
+  4. the MAIN CONTENT builds/fades in beneath the settled headline; any secondary label (e.g. the
+     Scaffolding problem "Algebra · solve 2x + 3 = 11") appears only AFTER the headline finishes.
+  Letter-by-letter TYPING is reserved for moments where something is literally being entered/
+  generated: the teacher prompt boxes and the admin voice transcript.
+- Interludes: 5 standalone quiet chapter cards, one italic line each, on a calm backdrop, one
+  before each major section (see scene list). They keep the narration lively between sections.
+- Transitions between scenes: a soft cream crossfade (no hard wipes, no orange curtain).
+- Do NOT use the term "system prompt" anywhere. Refer to it as the model's behaviour / how the
+  model responds by default ("Built into TutorBot's Behaviour", "Pedagogy encoded into the model").
+- Do NOT show "Section 1/2/3/4" (or B1/B2/B3) enumerations on screen — labels are plain names only.
+- Do NOT label the chapter cards "Sutradhara" on screen — they read "Interlude".
+- The Admin voice input is a mocked animation (waveform + scripted transcript typing on) paced to
+  the Priya TTS clip — no microphone, no Web Speech API.
+- Chat exchanges type on turn by turn (typing indicator → bubble), never all at once.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — CONTENT (20 beats, one continuous film)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1 — OPEN (title lockup)
+"Evidence-based." → "Built for the" → "Indian classroom." → "Meet" → the TutorBot logo lockup
+(official mark + wordmark) → specs beneath: "Grounded in NCF and learning science — an AI tutor,
+and an AI for the teacher too." Warm, mote-flecked backdrop.
+
+2 — THE FOUNDATION
+Headline: "We did not start by building an AI chatbot. We started by studying how children learn."
+A left-to-right pipeline builds ONE STAGE AT A TIME (stage → connector → next), as tall cards:
+  NEP + NCF + Learning Science → Pedagogical Design → Built into TutorBot's Behaviour → AI Tutor.
+(The last stage gets a highlighted "live" state.)
+
+3 — INTERLUDE  ·  "That's the foundation. Now let's see a few principles in action."
+
+4 — THE TUTORBOT PRINCIPLES (section intro)
+Kicker: "The TutorBot Principles" (large). Headline: "Every interaction follows evidence-based
+learning principles." Four dots hint at the four principles that follow.
+
+5 — PRINCIPLE 1 · CONSTRUCTIVISM
+Headline: "Children learn better by actively participating."
+Chat: Student: "Why do we jerk forward when the bus suddenly stops?" · Tutor asks back: "Before I
+explain — what was your body trying to do the moment before it stopped?"
+Caption: "The tutor first understands the learner before teaching."
+
+6 — PRINCIPLE 2 · DIALOGIC LEARNING
+Headline: "Learning happens through conversation."
+Chat: Student states a fact about photosynthesis · Tutor: "Can you explain this back to me in
+your own words?" · Student explains it back (win).
+Caption: "It doesn't check whether the student memorised the answer — it checks whether they
+understood it."
+
+7 — PRINCIPLE 3 · SCAFFOLDING
+Headline: "Complex problems are broken into manageable steps."
+The problem label "Algebra · solve 2x + 3 = 11" appears AFTER the headline, above the boxes.
+Visual: the SAME guiding steps shown side by side in THREE language boxes — English · Telugu ·
+Hindi — the Telugu and Hindi lines in NATIVE SCRIPT (not romanised), revealed one step at a time
+across all three:
+  EN: "Subtract 3 from both sides, what's left?" / "Good. Now divide both sides by 2." / "Excellent. So what is x?"
+  TE (Telugu script) and HI (Devanagari) mirror the same three steps.
+Caption: "Instead of giving away the solution, the tutor guides the student one step at a time —
+in the language of the classroom."
+
+8 — PRINCIPLE 4 · ACTIVITY-BASED LEARNING
+Headline: "Understanding comes from exploration and interaction."
+Visual: a BUILT interactive convex-lens ray simulation (SVG) — object arrow, bi-convex lens, F/2F
+markers, three coloured rays converging to a real inverted image; a live stats panel shows object
+distance (u), image distance (v), magnification (m) and image nature. Built live, not a screenshot.
+
+9 — SAFE BY DESIGN
+Headline: "Before it teaches anything, it keeps a child safe."
+A live refusal chat types on (student asks how to fake a stomach ache to skip school; TutorBot
+refuses, responds with care, points to a trusted adult) + a guardrail flow:
+  🛑 Refuses the unsafe request → 💛 Responds with care, not alarm → 🧑‍🏫 Points to a trusted adult.
+
+10 — INTERLUDE  ·  "Mapped these learning principles into one tutor."
+
+11 — WHERE WE ARE TODAY
+Headline: "The pedagogical groundwork is complete." Checklist, ticking in one item at a time:
+  ✓ Learning principles mapped  ·  ✓ Pedagogy encoded into the model  ·
+  ✓ Tutor behaviour specified   ·  ✓ Ready for classroom pilots
+
+12 — INTERLUDE  ·  "Theory's settled, TutorBot's ready. Now the real test begins."
+
+13 — CLASSROOM PILOTS ("The next nine months")
+Headline: "Classroom pilots: Validate TutorBot across real classrooms."
+Lead "What the pilots measure" + four tiles: Learning outcomes · Student engagement ·
+Teacher adoption · Classroom usability.
+
+14 — INTERLUDE  ·  "The classroom has two sides. This is the other one."
+
+15 — THE TURN (Teachers need AI too)
+Warm Indian-classroom backdrop (green chalkboard "½ + ¼ = ?", wall frame, barred window, fan,
+bench-desks). Headline: "That was the student's side. Teachers need AI too."
+Two panels: Student mode ✓ done (Socratic tutoring · Scaffolded hints · Activity-based learning)
+→ Teacher mode · next (Differentiated worksheets · Dynamic lesson plans · Parent communication).
+
+16 — DIFFERENTIATED WORKSHEETS
+Teacher prompt types in: "Rahul struggles with fractions. Meena is good at fractions but weak in
+word problems. Generate tomorrow's worksheet." Output: two worksheet cards — Rahul (fraction
+basics, visual/single-step) and Meena (word problems, applied/multi-step).
+Caption: "The system automatically produces differentiated worksheets tailored to each student."
+
+17 — DIFFERENTIATED LESSON PLANS  (voiced: Ashutosh TTS clip; music ducks)
+Teacher prompt (typed, in Hindi/Devanagari): "हमरे स्टूडेंट दरभंगा से हैं। आधी क्लास को फ्रैक्शन्स समझ में आ
+गया है, बाकी बच्चा लोग अभी भी स्ट्रगल कर रहे हैं। कल के लिए एक अच्छा लेसन प्लान इंग्लिश में बनाइए।"
+Output: a two-track plan (Still struggling / Ready to stretch) assembles side by side; then a live
+self-localisation lands — the generic example is struck through and replaced, highlighted:
+"Sharing a ~~pizza~~ roti equally between 4 friends — each hissa (share) is one tukda (piece),
+or 1/4 of the whole." (Animated strikethrough-then-replace.)
+Caption: "AI generates a lesson plan for mixed-ability classrooms — grounded in Darbhanga, not a
+generic textbook default."
+
+18 — ADMINISTRATIVE ASSISTANT (voice input; voiced: Priya TTS clip; music ducks)
+Opens on a mic + waveform. The teacher "speaks" and a transcript types on, PACED to the Priya
+voice clip: "Rahul had difficulty with reading today." / "Priya improved in multiplication." /
+"Arjun was absent." / "Can you write a note for each parent. Rahul's mom prefers Marathi, and
+Priya's family speaks Telugu at home." Then it hands off ("Generating parent notes…") and THREE
+separate, personalised notes appear (not one generic summary):
+  - Rahul's parents (Marathi–English): "Rahul la aaj reading jara tough vatla, pan amhi tyavar
+    ekatra kaam karat aahot — kahi tension nahi, ya week madhey thoda extra practice karu."
+  - Priya's parents (Telugu–English): "Priya multiplication lo chala baga improve ayyindi ee week
+    — chala proud moment class ki!"
+  - Arjun's parents (English): a warm, neutral note about the absence inviting a check-in.
+Caption: "Three separate, personalised notes — not one generic summary. Written in each family's
+own mix of languages: Marathi–English for Rahul, Telugu–English for Priya."
+
+19 — INTERLUDE  ·  "That's what it does today. Here's where it's going."
+
+20 — CLOSING VISION  (three phases in one scene)
+  Phase A — kicker "The promise by December 2027" (large) + line "1M Teachers, AI-literate."
+  Phase B — the India map (SVG) fills in, states light up across the country while a counter
+    climbs to 1,000,000: "One million teachers, in every corner of India." · counter label
+    "teachers, AI-literate" · "N / 36 states & union territories".
+  Phase C — a high-contrast dark END CARD: the Bodhan mark (white on dark), eyebrow
+    "bodhan.ai · TutorBot", title "Built for India, in India.", sub "Grounded in Learning
+    Sciences & NCF 2023", line "AI that lifts both students and teachers." + a Replay button.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — DELIVERABLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Folder `film_MKfeedback1/`: index.html · styles.css · reel.js · app.js · bundle.py · serve.sh ·
+  assets/india.svg · images/ · fonts/ (Inter + TB faces) · audio/ (music.mp3, music_Sitar.mp3,
+  tts_ashutosh.mp3, tts_priya.mp3).
+- Dev: `cd film_MKfeedback1 && ./serve.sh <port>` → http://localhost:<port>/ → "Start the Film".
+  (A server is needed in dev so fonts/assets load over http, not file://.)
+- Portable: `python3 bundle.py` → `../TutorBot_Film_MKfeedback1.html`, everything inlined, opens
+  by double-click in a REAL browser (not an IDE preview — the inlined scripts need a real browser).
+- Self-check: step through all 20 beats; confirm each content slide reads kicker → word-by-word
+  streaming headline → content; the pipeline, sim and map fill the frame; the 5 Interlude cards
+  land between sections; no "system prompt" wording, no "Section N" labels, no on-screen
+  "Sutradhara"; the IKS beat is NOT present (cut); the Ashutosh/Priya voice clips play with the
+  music ducking; and resize the window to a few aspect ratios to confirm the 16:9 layout stays
+  locked (letterboxed, never reflowing).
+
+NOTE ON LANGUAGES: the Telugu/Hindi scaffolding lines, the Hindi lesson prompt, and the
+Marathi/Telugu parent notes are best-effort and illustrative — have a native speaker verify them
+before any public/production use.
