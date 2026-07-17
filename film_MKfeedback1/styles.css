@@ -117,6 +117,10 @@ body:has(.stage:not([hidden])) .brand-fixed{opacity:.9}
 .brand-fixed .bird{width:34px;height:34px;border-radius:10px}
 .brand-text{font-family:var(--disp);font-weight:700;font-size:21.6px;color:var(--ink)}
 .brand-text b{color:var(--accent)}
+/* on the dark closing card the fixed brand mark must invert to stay visible */
+body.end-dark .brand-text{color:#fff}
+body.end-dark .brand-text b{color:#FFC486}
+body.end-dark .brand-fixed .bmark{filter:brightness(0) invert(1)}
 
 /* =====================================================================
    Stage + layers
@@ -469,15 +473,20 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
 .ft-ico{font-size:19.2px}
 .found-bridge{max-width:64ch;text-align:center;color:var(--ink2);font-size:clamp(16.8px,1.8cqw,20.4px);line-height:1.5}
 .pipe{display:flex;align-items:stretch;justify-content:center;width:100%}
-.pipe-stage{flex:1;max-width:300px;min-height:44cqh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 22px;text-align:center;
+.pipe-stage{flex:1;max-width:300px;min-height:44cqh;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 15px;text-align:center;
   box-shadow:0 24px 54px -30px rgba(120,60,20,.5);opacity:0;transform:translateY(14px) scale(.96);
   transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1),border-color .4s,box-shadow .4s}
 .pipe-stage.on{opacity:1;transform:none}
 .pipe-stage.live{border-color:var(--accent);box-shadow:0 0 0 3px rgba(239,107,53,.18),0 26px 56px -26px rgba(236,90,56,.6)}
 .ps-ico{font-size:clamp(48px,6cqw,69.6px);margin-bottom:6px}
 .ps-title{font-family:var(--disp);font-weight:700;font-size:clamp(20.4px,2.3cqw,26.4px);color:var(--ink);line-height:1.22}
-.ps-sub{font-size:clamp(15.6px,1.7cqw,18px);color:var(--ink2);margin-top:4px;line-height:1.4}
+.ps-sub{font-size:clamp(13px,1.4cqw,15.5px);color:var(--ink2);line-height:1.35;white-space:nowrap}
+/* the sub-heading arrives a beat after its stage — title reads first, then the descriptor fades in
+   (driven by a .in class from the timeline so the reveal is explicit) */
+.ps-sub{opacity:0;transform:translateY(6px);
+  transition:opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1)}
+.ps-sub.in{opacity:1;transform:none}
 .pipe-arrow{align-self:center;flex:none;width:clamp(28px,3cqw,52px);height:3px;position:relative;margin:0 5px}
 .pipe-arrow span{position:absolute;inset:0;background:var(--line);border-radius:2px;overflow:hidden}
 .pipe-arrow span::after{content:"";position:absolute;inset:0;width:0;background:var(--coral);transition:width .5s ease}
@@ -487,7 +496,7 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
 
 /* --- Section 2 · intro title beat --- */
 .section-card{justify-content:center;gap:16px;text-align:center}
-.section-eyebrow{font-size:clamp(22px,2.6cqw,34px);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}
+.section-eyebrow{font-size:clamp(20px,2.6cqw,34px);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}
 .section-title{font-family:var(--disp);font-weight:700;font-size:clamp(30px,4.4cqw,54px);color:var(--ink);line-height:1.14;max-width:26ch}
 .section-sub{color:var(--ink2);font-size:clamp(16.8px,1.9cqw,22.8px);max-width:52ch}
 .section-dots{display:flex;gap:10px;margin-top:6px}
@@ -554,6 +563,36 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
 
 /* --- B2 · two-track lesson plan --- */
 .lessons2-card .lp2-main{display:flex;flex-direction:column;gap:14px;width:min(620px,58cqw)}
+/* ── Slide 17 · ONE plan, two lanes (shared spine forks into differentiated activities) ── */
+.lp1{display:flex;flex-direction:column;gap:12px;width:100%}
+.lp1-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:18px}
+.lp1-lane{justify-self:center;font-size:clamp(12px,1.25cqw,14.5px);font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 15px;border-radius:100px;opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.lp1-lane.a{color:#3d8bc9;background:#e6f0fa}
+.lp1-lane.c{color:#EF6B35;background:#fdeee6}
+.lp1-plan{justify-self:center;font-family:var(--disp);font-weight:700;font-size:clamp(15px,1.6cqw,19px);color:var(--ink2);
+  opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.lp1-lane.on,.lp1-plan.on{opacity:1;transform:none}
+.lp1-grid{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:20px;row-gap:10px}
+.lp1-spine{position:absolute;left:50%;top:12px;bottom:12px;width:3px;border-radius:2px;
+  background:linear-gradient(180deg,#5aa9e6,#EF6B35);transform:translateX(-50%) scaleY(0);transform-origin:top;
+  transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.lp1-spine.on{transform:translateX(-50%) scaleY(1)}
+.lp1-node{position:relative;z-index:1;justify-self:center;width:clamp(30px,3cqw,36px);height:clamp(30px,3cqw,36px);border-radius:50%;
+  display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:clamp(15px,1.5cqw,17px);color:#fff;
+  background:var(--coral);box-shadow:0 0 0 6px var(--card),0 8px 18px -8px rgba(236,90,56,.6);
+  opacity:0;transform:scale(.4);transition:opacity .4s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.lp1-node.on{opacity:1;transform:scale(1)}
+.lp1-cell{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 14px;
+  box-shadow:0 16px 40px -30px rgba(120,60,20,.5);display:flex;flex-direction:column;gap:2px;
+  opacity:0;transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.lp1-cell.left{border-right:4px solid #5aa9e6;text-align:right;align-items:flex-end;transform:translateX(16px)}
+.lp1-cell.right{border-left:4px solid #EF6B35;transform:translateX(-16px)}
+.lp1-cell.on{opacity:1;transform:none}
+.lp1-phase{font-size:clamp(11px,1.1cqw,12.5px);font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.lp1-cell.left .lp1-phase{color:#3d8bc9}
+.lp1-cell.right .lp1-phase{color:#EF6B35}
+.lp1-txt{font-size:clamp(13.5px,1.45cqw,16.5px);color:var(--ink);line-height:1.38}
 .lp2-tracks{display:flex;gap:16px}
 .lp2-track{flex:1;background:var(--card);border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:16px;padding:14px 16px;box-shadow:0 20px 46px -32px rgba(120,60,20,.5)}
 .lp2-track.t-a{border-top-color:#5aa9e6}.lp2-track.t-c{border-top-color:#EF6B35}
@@ -658,10 +697,11 @@ body[data-scene="worksheets"] .beat-cap{font-size:clamp(15px,1.5cqw,17.4px);max-
 body[data-scene="admin"] .center-card{top:27cqh;bottom:6cqh}
 /* teacherTurn is a dense split layout — keep its narration sub compact so it clears the mode cards */
 body[data-scene="teacherTurn"] .cap-sub{font-size:clamp(14.8px,1.6cqw,19.4px);max-width:46ch}
-body[data-scene="p4"] .center-card,
 body[data-scene="safety"] .center-card{top:22cqh}
+/* lens sim lowered so the 2-line headline clears the sim card (but not so far the legend clips) */
+body[data-scene="p4"] .center-card{top:24cqh;bottom:5cqh}
 /* teacher-turn cards pushed right, clear of the chalkboard on the left */
-body[data-scene="teacherTurn"] .center-card{top:23cqh;left:auto;right:3%;transform:none;width:min(720px,62cqw)}
+body[data-scene="teacherTurn"] .center-card{top:23cqh;left:auto;right:3%;transform:none;width:52cqw}
 
 /* =====================================================================
    MK-feedback v2 — reworked scenes
@@ -887,7 +927,7 @@ body.end-dark .visual-layer,body.end-dark .scrim{opacity:0}
    ===================================================================== */
 .bub{font-size:clamp(18px,1.9cqw,22.8px);padding:13px 17px}
 .chat-scroll{padding:22px;gap:16px}
-.ps-sub{font-size:clamp(15.6px,1.8cqw,19.2px)}
+.ps-sub{font-size:clamp(13px,1.4cqw,15.5px)}
 .pipe-stage{min-height:40cqh}
 .check-text{font-size:clamp(21.6px,2.5cqw,30px)}
 .check-row{padding:18px 24px}
@@ -925,7 +965,7 @@ body[data-scene="pilots"] .mt-ico{font-size:55.2px;margin-bottom:14px}
 body[data-scene="pilots"] .mt-text{font-size:clamp(20.4px,2.4cqw,26.4px)}
 
 /* --- slide 15 (the turn): pull the mode cards toward centre, off the gap --- */
-body[data-scene="teacherTurn"] .center-card{right:16%}
+body[data-scene="teacherTurn"] .center-card{right:15%}   /* left edge ≈33% clears the blackboard (right edge 29%) at every size */
 
 /* --- slide 18 (admin): transcript sits below the headline; notes replace it cleanly --- */
 .notes{display:none}

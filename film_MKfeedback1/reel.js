@@ -57,7 +57,7 @@ window.REEL = {
       { title: "Built into TutorBot's Behaviour", sub: "How it responds by default", ico: "🧠" },
       { title: "AI Tutor", sub: "What the student meets", ico: "🧑🏼‍🏫" },
     ],
-    dur: 13000,
+    dur: 15000,
   },
 
   // 3 — SECTION 2 · intro (section title beat)
@@ -202,7 +202,7 @@ window.REEL = {
     punch: "is complete.",
     items: [
       "Learning principles mapped",
-      "Pedagogy encoded into the model",
+      "Pedagogy encoded",
       "Tutor behaviour specified",
       "Ready for classroom pilots",
     ],
@@ -282,7 +282,7 @@ window.REEL = {
     shot: "images/LessonPlan1.png",
     shotCap: "Real output · a full plan generated from one line",
     caption: "AI generates a lesson plan for mixed-ability classrooms — grounded in Darbhanga, not a generic textbook default.",
-    dur: 25000,
+    dur: 30000,
   },
 
   // 13 — B3 · Administrative Assistant (voice → transcript → 3 parent notes)

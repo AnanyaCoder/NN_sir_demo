@@ -331,11 +331,14 @@ function sceneFoundation() {
       kfs.push({ at: t, fn: () => pipe.classList.add("show") });
       t += 400;
       stages.forEach((s, i) => {
-        kfs.push({ at: t, fn: () => s.classList.add("on") });
+        const onAt = t;
+        kfs.push({ at: onAt, fn: () => s.classList.add("on") });
+        const sub = s.querySelector(".ps-sub");
+        if (sub) kfs.push({ at: onAt + 450, fn: () => sub.classList.add("in") });   // sub-heading arrives a beat later
         t += 850;
         if (arrows[i]) { kfs.push({ at: t, fn: () => arrows[i].classList.add("on") }); t += 560; }
       });
-      kfs.push({ at: t + 150, fn: () => stages[stages.length - 1].classList.add("live") });
+      kfs.push({ at: t + 200, fn: () => stages[stages.length - 1].classList.add("live") });
       return kfs;
     },
   });
@@ -682,14 +685,27 @@ function sceneLessons() {
       setCaption(R.kicker, "", "");
       const lz = R.localize;
       // No screenshot — the two-track plan is the whole stage, so it can breathe wider.
+      const tA = R.tracks[0], tC = R.tracks[1];   // Still struggling / Ready to stretch
+      // ONE plan, two lanes: a shared central spine of numbered steps; each step forks into a
+      // differentiated activity on the left (still struggling) and the right (ready to stretch).
       const card = showCard(
         `<div class="lp2-main solo">
            <div class="prompt-bar"><span class="pb-label">Teacher</span><span class="pb-text" id="pbText"></span><span class="pb-caret">▌</span></div>
-           <div class="lp2-tracks">${R.tracks.map((tr) =>
-            `<div class="lp2-track t-${tr.tint}">
-               <div class="lp2-label">${tr.label}</div>
-               ${tr.steps.map((s) => `<div class="lp2-step"><span class="pe">${s.e}</span><span class="pt">${s.t}</span></div>`).join("")}
-             </div>`).join("")}</div>
+           <div class="lp1">
+             <div class="lp1-head">
+               <span class="lp1-lane a" data-h>${tA.label}</span>
+               <span class="lp1-plan" data-h>One plan · both speeds</span>
+               <span class="lp1-lane c" data-h>${tC.label}</span>
+             </div>
+             <div class="lp1-grid">
+               <span class="lp1-spine"></span>
+               ${tA.steps.map((s, i) =>
+                 `<div class="lp1-cell left"><span class="lp1-phase">${s.e}</span><span class="lp1-txt">${s.t}</span></div>` +
+                 `<div class="lp1-node">${i + 1}</div>` +
+                 `<div class="lp1-cell right"><span class="lp1-phase">${tC.steps[i].e}</span><span class="lp1-txt">${tC.steps[i].t}</span></div>`
+               ).join("")}
+             </div>
+           </div>
            <div class="lp2-localize" id="lpLocal">
              <span class="lz-badge">Localising for Darbhanga</span>
              <div class="lz-text">${lz.pre}<span class="lz-strike" id="lzStrike">${lz.strike}</span><span class="lz-swap" id="lzSwap">${lz.swap}</span>${lz.post}</div>
@@ -697,8 +713,10 @@ function sceneLessons() {
          </div>`, "lessons2-card");
       card.style.opacity = "0"; card.style.transition = "opacity .5s ease";
       const pb = card.querySelector("#pbText");
-      const steps = [...card.querySelectorAll(".lp2-step")];
-      const labels = [...card.querySelectorAll(".lp2-label")];
+      const heads = [...card.querySelectorAll("[data-h]")];
+      const nodes = [...card.querySelectorAll(".lp1-node")];
+      const cells = [...card.querySelectorAll(".lp1-cell")];
+      const spine = card.querySelector(".lp1-spine");
       const local = card.querySelector("#lpLocal");
       const strike = card.querySelector("#lzStrike");
       const swap = card.querySelector("#lzSwap");
@@ -710,14 +728,17 @@ function sceneLessons() {
       const kfs = st.kfs.concat(typed.kfs); const end = typed.end;
       kfs.push({ at: st.end + 600, fn: () => { card.style.opacity = "1"; } });
       kfs.push({ at: st.end + 1000, fn: () => Clip.play(els.clipLessons) });   // teacher's voice
-      // both track headers appear together, then their steps flow in smoothly, side by side
+      // headers land → the spine draws down → each numbered step beads in, both lanes branching out
       let t = end + 600;
-      labels.forEach((l) => kfs.push({ at: t, fn: () => l.classList.add("on") }));
-      t += 650;
-      const perTrack = steps.length / labels.length;   // reveal step-rows across both tracks together
-      for (let r = 0; r < perTrack; r++) {
-        labels.forEach((_, ti) => { const el = steps[ti * perTrack + r]; if (el) kfs.push({ at: t + ti * 120, fn: () => el.classList.add("on") }); });
-        t += 560;
+      heads.forEach((h, i) => kfs.push({ at: t + i * 130, fn: () => h.classList.add("on") }));
+      t += 800;
+      kfs.push({ at: t, fn: () => spine.classList.add("on") });
+      t += 380;
+      for (let r = 0; r < nodes.length; r++) {
+        kfs.push({ at: t, fn: () => nodes[r].classList.add("on") });
+        kfs.push({ at: t + 130, fn: () => cells[r * 2] && cells[r * 2].classList.add("on") });
+        kfs.push({ at: t + 260, fn: () => cells[r * 2 + 1] && cells[r * 2 + 1].classList.add("on") });
+        t += 760;
       }
       // the localisation lands a beat later, once the plan has settled
       t += 900;
@@ -822,7 +843,8 @@ function sceneClose() {
       const svg = card.querySelector(".india-map");
       const groups = svg ? [...svg.querySelectorAll(".state")] : [];
       const numEl = card.querySelector("#mpNum"), stEl = card.querySelector("#mpStates");
-      if (card.querySelector("#mpTot")) card.querySelector("#mpTot").textContent = groups.length || 36;
+      const TOT = 36;   // India = 28 states + 8 UTs (the SVG carries fewer paths, but we count all 36)
+      if (card.querySelector("#mpTot")) card.querySelector("#mpTot").textContent = TOT;
       // deterministic, spread-out lighting order (so it doesn't fill top-to-bottom)
       const order = groups.map((_, i) => i).sort((a, b) => ((a * 13) % groups.length) - ((b * 13) % groups.length));
 
@@ -837,13 +859,13 @@ function sceneClose() {
 
       // light states + climb the counter together over ~3.6s
       const L0 = T_MAP + 500, LSPAN = 3400, N = groups.length || 36;
-      order.forEach((gi, k) => kfs.push({ at: L0 + (k / N) * LSPAN, fn: () => { if (groups[gi]) groups[gi].classList.add("lit"); if (stEl) stEl.textContent = k + 1; } }));
+      order.forEach((gi, k) => kfs.push({ at: L0 + (k / N) * LSPAN, fn: () => { if (groups[gi]) groups[gi].classList.add("lit"); if (stEl) stEl.textContent = Math.round(((k + 1) / N) * TOT); } }));
       const STEPS = 34, target = M.count;
       for (let s = 1; s <= STEPS; s++) {
         const p = s / STEPS, eased = 1 - Math.pow(1 - p, 3), val = Math.round(eased * target / 1000) * 1000;
         kfs.push({ at: L0 + p * LSPAN, fn: () => { numEl.textContent = val.toLocaleString("en-US"); } });
       }
-      kfs.push({ at: L0 + LSPAN + 400, fn: () => { numEl.textContent = target.toLocaleString("en-US"); if (stEl) stEl.textContent = N; mapStage.classList.add("done"); } });
+      kfs.push({ at: L0 + LSPAN + 400, fn: () => { numEl.textContent = target.toLocaleString("en-US"); if (stEl) stEl.textContent = TOT; mapStage.classList.add("done"); } });
 
       // Phase C: high-contrast end card
       const T_END = L0 + LSPAN + 2400;
