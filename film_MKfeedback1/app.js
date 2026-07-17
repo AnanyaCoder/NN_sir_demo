@@ -491,7 +491,7 @@ function sceneActive() {
          </div>`, "active-card");
       const q = (s) => card.querySelector(s);
       this._sim = {
-        doPx: 210, target: 210, Fl, Fr,
+        doPx: 245, target: 245, Fl, Fr,   // start far beyond 2F (small, inverted), then sweep inward once
         rayA: q(".ray-a"), rayB: q(".ray-b"), rayC: q(".ray-c"),
         objStem: q(".obj-stem"), objHead: q(".obj-head"), objLbl: q(".obj-lbl"),
         imgStem: q(".img-stem"), imgHead: q(".img-head"), imgLbl: q(".img-lbl"),
@@ -503,10 +503,9 @@ function sceneActive() {
       const base = st.end + 900;
       return st.kfs.concat([
         { at: base - 500, fn: () => { card.style.opacity = "1"; } },
-        { at: base, fn: () => this._sim.target = 240 },        // far beyond 2F → small image
-        { at: base + 4000, fn: () => this._sim.target = 156 }, // at 2F → same size
-        { at: base + 7600, fn: () => this._sim.target = 132 }, // between F & 2F → magnified
-        { at: base + 11000, fn: () => this._sim.target = 200 },
+        // one continuous inward glide: far (small) → 2F (same size) → between F & 2F (magnified), then hold
+        { at: base + 2000, fn: () => this._sim.target = 156 }, // at 2F → same size
+        { at: base + 6800, fn: () => this._sim.target = 128 }, // between F & 2F → magnified (and hold here)
       ]);
     },
     update() {
