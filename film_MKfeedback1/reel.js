@@ -25,8 +25,8 @@ window.REEL = {
   sutra: {
     principles: "That's the foundation. Now let's see a few principles in action.",
     today: "Mapped these learning principles into one tutor.",
-    pilots: "Theory's settled, TutorBot's ready. Now the real test begins.",
-    teacher: "The classroom has two sides. This is the other one.",
+    pilots: "Now the real test begins.",
+    teacher: "As classroom has two sides. We now go to the other side.",
     close: "That's what it does today. Here's where it's going.",
   },
 
@@ -67,7 +67,7 @@ window.REEL = {
     line: "Every interaction follows",
     punch: "evidence-based learning principles.",
     //sub: "Four principles, one consistent system — not four different ideas.",
-    dur: 13000,
+    dur: 11000,
   },
 
   // 4 — Principle 1 · Constructivism (chat: understand the learner first)
@@ -172,7 +172,7 @@ window.REEL = {
     simIntro: "A converging lens bends parallel light to a focus. Drag the object along the axis — watch the real image flip and change size.",
     tip: "Past 2F the image is real, inverted and smaller. Bring the object between F and 2F and the image grows larger than the object itself.",
     note: "Not a screenshot — the same explorable ray diagram runs live in the product.",
-    dur: 17500,
+    dur: 15500,
   },
 
   // 7b — Safe by design (a live guardrail chat that types on + behaviour flow)
@@ -212,28 +212,34 @@ window.REEL = {
   // 9 — SECTION 4A · Classroom Pilots
   pilots: {
     section: "The next nine months",
-    kicker: "The next nine months",
+    kicker: "Classroom pilots",
     line: "Classroom pilots:",
     punch: "Validate TutorBot across real classrooms.",
-    lead: "What the pilots measure",
+    lead: "What the pilots will measure",
     measures: [
       { ico: "📈", text: "Learning outcomes" },
       { ico: "🙌", text: "Student engagement" },
       { ico: "🧑‍🏫", text: "Teacher adoption" },
       { ico: "🏫", text: "Classroom usability" },
     ],
-    dur: 11500,
+    launch: {
+      pre: "Launching on",
+      date: "September 5",
+      where: "Andhra Pradesh",
+      partner: "In partnership with the Government of Andhra Pradesh",
+    },
+    dur: 10500,
   },
 
   // 10 — SECTION 4B · Teachers need AI too (the turn: student side → teacher side)
   teacherTurn: {
     section: "Section 4B",
-    kicker: "The turn",
-    line: "That was the student's side.",
-    punch: "Teachers need AI too.",
+    kicker: "",
+    line: "Teachers need AI too.",
+    punch: "",
     sub: " ",
     modes: [
-      { tag: "Student mode", state: "done", items: ["Socratic tutoring", "Scaffolded hints", "Activity-based learning"] },
+      { tag: "Student mode", state: "done", items: ["Socratic tutoring", "Scaffolded hints", "Multi-lingual tutoring", "Activity-based learning"] },
       { tag: "Teacher mode", state: "next", items: ["Differentiated worksheets", "Dynamic lesson plans", "Parent communication"] },
     ],
     dur: 11500,
@@ -243,7 +249,7 @@ window.REEL = {
   worksheets: {
     kicker: "Differentiated Worksheets",
     line: "One prompt.",
-    punch: "Two worksheets — one for each student.",
+    punch: "Two worksheets: one for each student.",
     prompt: "Rahul struggles with fractions. Meena is good at fractions but weak in word problems. Generate tomorrow's worksheet.",
     cards: [
       { who: "Rahul", tint: "a", focus: "Fraction basics", items: ["Shade 1/2 of the circle.", "Which is bigger: 1/4 or 1/2?", "Write 3 out of 4 as a fraction."], note: "Visual, single-step, generous scaffolds." },
@@ -256,8 +262,8 @@ window.REEL = {
   // 12 — B2 · Differentiated Lesson Plans (one prompt → two-track plan, localised live)
   lessons: {
     kicker: "Differentiated Lesson Plans",
-    line: "One classroom, two speeds —",
-    punch: "one lesson plan that holds both.",
+    line: "One classroom, two speeds.",
+    punch: "One lesson plan that holds both.",
     //prompt: "My students are from Darbhanga. Half the class understands fractions, the other half is still struggling. Plan tomorrow's lesson.",
     prompt: "हमरे स्टूडेंट दरभंगा से हैं। आधी  क्लास को फ्रैक्शन्स समझ में आ गया है, बाकी बच्चा लोग अभी भी स्ट्रगल कर रहे हैं। कल के लिए एक अच्छा लेसन प्लान इंग्लिश में बनाइए।",
     tracks: [
@@ -312,10 +318,11 @@ window.REEL = {
 
   // 14 — Closing vision (promise lines → India map lighting up → end card)
   close: {
-    kicker: "The promise by December 2027",
+    kicker: "The promise:",
     // Phase A — the grounding + readiness (why this promise is credible)
     lines: [
-      "1M Teachers, AI-literate.",
+      "1M Teachers, AI literate.",
+      "By December 2027",
     ],
     map: {
       // Phase B — the scale, narrating the map lighting up
@@ -331,6 +338,6 @@ window.REEL = {
      endTitle: "Built for India,\nin India.",
     // endTitle: "One tutor.\nEvery student.",
     endSub: "Grounded in Learning Sciences & NCF 2023",
-    endLine: "AI that lifts both students and teachers.",
+    endLine: "AI that empowers every student. Elevates every teacher.",
   },
 };

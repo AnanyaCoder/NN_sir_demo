@@ -34,6 +34,7 @@ const els = {
   extra: document.getElementById("sceneExtra"),
   rail: document.getElementById("railFill"),
   chapter: document.getElementById("chapter"),
+  timecode: document.getElementById("timecode"),
   music: document.getElementById("music"),
   clipLessons: document.getElementById("clipLessons"),
   clipAdmin: document.getElementById("clipAdmin"),
@@ -77,10 +78,14 @@ function revealSeq(scope, sel, start, gap) {
   return Array.from(scope.querySelectorAll(sel)).map((el, i) => ({ at: start + i * gap, fn: () => el.classList.add("on") }));
 }
 // Type `text` into `el` one character at a time; returns {kfs, end}.
+// Chars are pre-placed (final wrapped layout fixed) and revealed one by one — so a long prompt
+// never reflows/jumps lines as it types.
 function typeKfs(el, text, start, step) {
   const kfs = []; step = step || 26;
-  kfs.push({ at: start, fn: () => { el.textContent = ""; el.classList.add("typing-live"); } });
-  for (let n = 1; n <= text.length; n++) kfs.push({ at: start + n * step, fn: () => (el.textContent = text.slice(0, n)) });
+  el.innerHTML = [...text].map((ch) => `<span class="tc">${ch === " " ? " " : ch === "<" ? "&lt;" : ch}</span>`).join("");
+  const spans = [...el.querySelectorAll(".tc")];
+  kfs.push({ at: start, fn: () => el.classList.add("typing-live") });
+  spans.forEach((sp, n) => kfs.push({ at: start + (n + 1) * step, fn: () => sp.classList.add("on") }));
   const end = start + text.length * step;
   kfs.push({ at: end + 120, fn: () => el.classList.remove("typing-live") });
   return { kfs, end: end + 120 };
@@ -100,15 +105,18 @@ function sceneSutra(id, text) {
     },
   });
 }
-// Stream a headline into the top caption word by word (with a caret); returns {kfs, end}.
+// Stream a headline into the top caption word by word; returns {kfs, end}.
+// All words are pre-placed (final layout fixed) and faded in one by one — so the line NEVER
+// reflows/jitters as it "types" (fixes the last-word-wraps-then-jumps-back problem).
 function streamTitle(line, punch, start, gap) {
   start = start || 400; gap = gap || 130;
-  const words = [...String(line).split(" ").map((w) => ({ w, g: false })), ...String(punch || "").split(" ").filter(Boolean).map((w) => ({ w, g: true }))];
-  const build = (n, caret) => words.slice(0, n).map((x) => x.g ? `<span class="grad">${x.w}</span>` : x.w).join(" ") + (caret ? `<span class="stream-caret">▍</span>` : "");
+  const words = [...String(line).split(" ").filter(Boolean).map((w) => ({ w, g: false })),
+                 ...String(punch || "").split(" ").filter(Boolean).map((w) => ({ w, g: true }))];
+  els.title.innerHTML = words.map((x) => `<span class="sw${x.g ? " grad" : ""}">${x.w}</span>`).join(" ");
+  const spans = [...els.title.querySelectorAll(".sw")];
   const kfs = [];
-  words.forEach((_, i) => kfs.push({ at: start + i * gap, fn: () => { els.title.innerHTML = build(i + 1, true); } }));
+  spans.forEach((sp, i) => kfs.push({ at: start + i * gap, fn: () => sp.classList.add("on") }));
   const end = start + words.length * gap;
-  kfs.push({ at: end + 60, fn: () => { els.title.innerHTML = build(words.length, false); } });   // drop the caret
   return { kfs, end: end + 60 };
 }
 
@@ -148,12 +156,9 @@ function buildDesk() {
 // a barred window, a wall map, and a row of bench-desks along the bottom.
 function buildClassroom() {
   const w = frame("viz-tint viz-class");
+  // Simplified: just a subtle chalkboard motif (fan / wall-map / window / desks removed to declutter).
   w.innerHTML =
-    `<div class="cl-fan"><span class="cl-blade"></span><span class="cl-blade"></span><span class="cl-blade"></span><i class="cl-hub"></i></div>
-     <div class="cl-board"><span class="cl-chalk">½ + ¼ = ?</span><span class="cl-chalk cl-chalk2">TODAY'S LESSON</span><span class="cl-tray"></span></div>
-     <div class="cl-map"><i></i><i></i></div>
-     <div class="cl-window"><b></b><b></b></div>
-     <div class="cl-desks">${Array.from({ length: 5 }, () => `<span class="cl-desk"></span>`).join("")}</div>`;
+    `<div class="cl-board"><span class="cl-chalk">½ + ¼ = ?</span><span class="cl-chalk cl-chalk2">TODAY'S LESSON</span><span class="cl-tray"></span></div>`;
   return w;
 }
 
@@ -318,14 +323,10 @@ function sceneFoundation() {
       const pipe = card.querySelector("#fPipe");
       const stages = [...card.querySelectorAll(".pipe-stage")];
       const arrows = [...card.querySelectorAll(".pipe-arrow")];
-      const kfs = [];
-      // 1 — stream the headline, word by word, with a caret
-      const words = [...R.line.split(" ").map((w) => ({ w, g: false })), ...R.punch.split(" ").map((w) => ({ w, g: true }))];
-      const html = (n, caret) => words.slice(0, n).map((x) => x.g ? `<span class="grad">${x.w}</span>` : x.w).join(" ") + (caret ? `<span class="stream-caret">▍</span>` : "");
-      const WSTART = 1300, WGAP = 155;
-      words.forEach((_, i) => kfs.push({ at: WSTART + i * WGAP, fn: () => { els.title.innerHTML = html(i + 1, true); } }));
-      const streamEnd = WSTART + words.length * WGAP;
-      kfs.push({ at: streamEnd + 60, fn: () => { els.title.innerHTML = html(words.length, false); } });   // drop caret
+      // 1 — stream the headline, word by word (pre-placed so it never reflows/jitters)
+      const st = streamTitle(R.line, R.punch, 1300, 155);
+      const kfs = st.kfs;
+      const streamEnd = st.end;
       // 2 — pause, then the pipeline builds stage → arrow → stage …
       let t = streamEnd + 1400;
       kfs.push({ at: t, fn: () => pipe.classList.add("show") });
@@ -601,21 +602,55 @@ function scenePilots() {
     id: "pilots", duration: R.dur,
     enter() {
       clearCaption(); showVisual(buildMotes(18));
-      setCaption(R.kicker, "", "");
+      const L = R.launch;
+      // Asymmetric: left-aligned launch block (seal as a small credential badge) + a four-point
+      // radar/dial on the right for the measures (line icons, single accent colour — no emoji).
+      const ICONS = [
+        '<svg viewBox="0 0 22 22" class="ric"><polyline points="3,3 3,19 19,19"/><polyline points="5.5,14.5 9,10 12,12 17.5,5.5"/></svg>',        // learning outcomes (chart)
+        '<svg viewBox="0 0 22 22" class="ric"><path d="M11 3 L12.8 9.2 L19 11 L12.8 12.8 L11 19 L9.2 12.8 L3 11 L9.2 9.2 Z"/></svg>',              // student engagement (spark)
+        '<svg viewBox="0 0 22 22" class="ric"><circle cx="11" cy="7.6" r="3.2"/><path d="M4.6 18.4 C4.6 13, 17.4 13, 17.4 18.4"/></svg>',           // teacher adoption (person)
+        '<svg viewBox="0 0 22 22" class="ric"><rect x="3.5" y="5" width="15" height="11" rx="1.6"/><path d="M7.5 10.6 l2.4 2.4 l4.6 -4.6"/></svg>',   // classroom usability (board + check)
+      ];
+      const POS = ["r-top", "r-right", "r-bottom", "r-left"];
+      const labels = R.measures.map((m, i) =>
+        `<div class="rlabel ${POS[i]}">${ICONS[i]}<span>${m.text}</span></div>`).join("");
       const card = showCard(
-        `<div class="measure-wrap">
-           <div class="measure-lead">${R.lead}</div>
-           <div class="measure-grid">${R.measures.map((m) =>
-            `<div class="measure-tile"><div class="mt-ico">${m.ico}</div><div class="mt-text">${m.text}</div></div>`).join("")}</div>
-         </div>`, "measure-card");
-      card.style.opacity = "0"; card.style.transition = "opacity .5s ease";
-      const tiles = [...card.querySelectorAll(".measure-tile")];
-      // stream the headline, then fade the card in and reveal the measure tiles one by one
-      const st = streamTitle(R.line, R.punch, 1300, 155);
-      const kfs = st.kfs;
-      kfs.push({ at: st.end + 600, fn: () => { card.style.opacity = "1"; } });
-      // the four measures appear clearly one at a time
-      tiles.forEach((tl, i) => kfs.push({ at: st.end + 1200 + i * 850, fn: () => tl.classList.add("on") }));
+        `<div class="pilots-split">
+           <div class="pilots-left">
+             <div class="pl-kicker" data-l>${R.kicker}</div>
+             <h2 class="pl-head" data-l>${L.pre} <span class="grad">${L.date}</span><br>in ${L.where}</h2>
+             <div class="pl-partner" data-l><img class="pl-badge" src="images/ap_emblem.png" alt="Government of Andhra Pradesh" /><span>${L.partner}</span></div>
+           </div>
+           <div class="pilots-right">
+             <div class="pm-lead" data-l>${R.lead}</div>
+             <div class="radar">
+               <svg class="radar-svg" viewBox="0 0 300 300" aria-hidden="true">
+                 <g class="radar-grid">
+                   <polygon points="150,45 255,150 150,255 45,150"/>
+                   <polygon points="150,80 220,150 150,220 80,150"/>
+                   <polygon points="150,115 185,150 150,185 115,150"/>
+                   <line x1="150" y1="150" x2="150" y2="45"/><line x1="150" y1="150" x2="255" y2="150"/>
+                   <line x1="150" y1="150" x2="150" y2="255"/><line x1="150" y1="150" x2="45" y2="150"/>
+                 </g>
+                 <polygon class="radar-fill" points="150,45 255,150 150,255 45,150"/>
+                 <circle class="radar-node" cx="150" cy="45" r="6"/><circle class="radar-node" cx="255" cy="150" r="6"/>
+                 <circle class="radar-node" cx="150" cy="255" r="6"/><circle class="radar-node" cx="45" cy="150" r="6"/>
+               </svg>
+               ${labels}
+             </div>
+           </div>
+         </div>`, "pilots2-card");
+      const lefts = [...card.querySelectorAll("[data-l]")];
+      const grid = card.querySelector(".radar-grid");
+      const fill = card.querySelector(".radar-fill");
+      const nodes = [...card.querySelectorAll(".radar-node")];
+      const rlabels = [...card.querySelectorAll(".rlabel")];
+      const kfs = [];
+      lefts.forEach((el, i) => kfs.push({ at: 500 + i * 520, fn: () => el.classList.add("on") }));   // left block slides in
+      kfs.push({ at: 1100, fn: () => grid.classList.add("on") });     // radar grid
+      kfs.push({ at: 1800, fn: () => fill.classList.add("on") });     // coverage shape scales in from centre
+      nodes.forEach((n, i) => kfs.push({ at: 2100 + i * 170, fn: () => n.classList.add("on") }));
+      rlabels.forEach((el, i) => kfs.push({ at: 2300 + i * 260, fn: () => el.classList.add("on") }));
       return kfs;
     },
   });
@@ -627,16 +662,42 @@ function sceneTeacherTurn() {
   return makeClockScene({
     id: "teacherTurn", duration: R.dur,
     enter() {
-      clearCaption(); showVisual(buildClassroom());
-      setCaption(R.kicker, `${R.line} <span class="grad">${R.punch}</span>`, R.sub);
-      showCard(
-        `<div class="turn2">${R.modes.map((m, i) =>
-          `${i ? `<div class="turn2-arrow" data-seq>→</div>` : ""}` +
-          `<div class="turn2-mode m-${m.state}" data-seq>
-             <div class="t2-tag">${m.tag}${m.state === "done" ? `<span class="t2-badge done">✓ done</span>` : `<span class="t2-badge next">next</span>`}</div>
-             <ul class="t2-items">${m.items.map((it) => `<li>${it}</li>`).join("")}</ul>
-           </div>`).join("")}</div>`, "turn2-card");
-      return [];
+      clearCaption(); showVisual(buildMotes(14));
+      // The whole slide is a classroom blackboard; the two-sides story is written in chalk —
+      // students' side ticked off (✓ done), teachers' side as the next chalk to-do (→ next).
+      const S = R.modes[0], T = R.modes[1];
+      const chalkCol = (m, cls, mark) =>
+        `<div class="chalk-col ${cls}">
+           <div class="chalk-tag" data-c>${m.tag} <b>${m.state === "done" ? "✓ done" : "→ next"}</b></div>
+           <ul>${m.items.map((it) => `<li data-c><span class="ck">${mark}</span><span>${it}</span></li>`).join("")}</ul>
+         </div>`;
+      const card = showCard(
+        `<div class="board">
+           <div class="board-surface">
+             <div class="chalk-head" id="cHead">${R.line}</div>
+             <div class="chalk-cols">
+               ${chalkCol(S, "c-done", "✓")}
+               <div class="chalk-div" id="cDiv"></div>
+               ${chalkCol(T, "c-next", "→")}
+             </div>
+           </div>
+           <div class="board-tray"><i class="chalk-a"></i><i class="chalk-b"></i></div>
+         </div>`, "board-card");
+      card.style.opacity = "0"; card.style.transition = "opacity .5s ease";
+      const head = card.querySelector("#cHead");
+      const div = card.querySelector("#cDiv");
+      const sItems = [...card.querySelectorAll(".c-done [data-c]")];
+      const tItems = [...card.querySelectorAll(".c-next [data-c]")];
+      const kfs = [];
+      kfs.push({ at: 400, fn: () => { card.style.opacity = "1"; } });
+      kfs.push({ at: 800, fn: () => head.classList.add("on") });     // chalk headline + underline draw
+      let t = 1700;
+      sItems.forEach((el, i) => kfs.push({ at: t + i * 360, fn: () => el.classList.add("on") }));   // tick off the student side
+      t += sItems.length * 360 + 350;
+      kfs.push({ at: t, fn: () => div.classList.add("on") });          // chalk divider draws down
+      t += 550;
+      tItems.forEach((el, i) => kfs.push({ at: t + i * 430, fn: () => el.classList.add("on") }));   // the teacher to-do, one by one
+      return kfs;
     },
   });
 }
@@ -827,47 +888,16 @@ function sceneClose() {
              <div class="vision-kicker" data-seq>${R.kicker}</div>
              <div class="vision-lines">${R.lines.map((l) => `<div class="vision-line" data-seq>${l}</div>`).join("")}</div>
            </div>
-           <div class="mapstage pre" id="mapStage">
-             <div class="mapfig">${INDIA_SVG || window.__INDIA_SVG__ || ""}</div>
-             <div class="mappanel">
-               <div class="mp-count" id="mpNum">0</div>
-               <div class="mp-label">${M.countLabel}</div>
-               <div class="mp-sub">${M.sub}</div>
-               <div class="mp-states"><b id="mpStates">0</b> / <span id="mpTot">36</span> ${M.statesLabel}</div>
-             </div>
-           </div>
          </div>`, "close-card");
       const vision = card.querySelector("#visionBlk");
-      const mapStage = card.querySelector("#mapStage");
-      const svg = card.querySelector(".india-map");
-      const groups = svg ? [...svg.querySelectorAll(".state")] : [];
-      const numEl = card.querySelector("#mpNum"), stEl = card.querySelector("#mpStates");
-      const TOT = 36;   // India = 28 states + 8 UTs (the SVG carries fewer paths, but we count all 36)
-      if (card.querySelector("#mpTot")) card.querySelector("#mpTot").textContent = TOT;
-      // deterministic, spread-out lighting order (so it doesn't fill top-to-bottom)
-      const order = groups.map((_, i) => i).sort((a, b) => ((a * 13) % groups.length) - ((b * 13) % groups.length));
-
+      const seq = [...card.querySelectorAll("[data-seq]")];
       const kfs = [];
-      const T_MAP = 5200;                         // promise lines → map
-      kfs.push({ at: T_MAP, fn: () => {
-        vision.classList.add("gone");
-        mapStage.classList.remove("pre");
-        setCaption(R.kicker, `${M.headline} <span class="grad">${M.headlinePunch}</span>`, "");
-        pulseCaption();
-      } });
-
-      // light states + climb the counter together over ~3.6s
-      const L0 = T_MAP + 500, LSPAN = 3400, N = groups.length || 36;
-      order.forEach((gi, k) => kfs.push({ at: L0 + (k / N) * LSPAN, fn: () => { if (groups[gi]) groups[gi].classList.add("lit"); if (stEl) stEl.textContent = Math.round(((k + 1) / N) * TOT); } }));
-      const STEPS = 34, target = M.count;
-      for (let s = 1; s <= STEPS; s++) {
-        const p = s / STEPS, eased = 1 - Math.pow(1 - p, 3), val = Math.round(eased * target / 1000) * 1000;
-        kfs.push({ at: L0 + p * LSPAN, fn: () => { numEl.textContent = val.toLocaleString("en-US"); } });
-      }
-      kfs.push({ at: L0 + LSPAN + 400, fn: () => { numEl.textContent = target.toLocaleString("en-US"); if (stEl) stEl.textContent = TOT; mapStage.classList.add("done"); } });
+      // the promise lines reveal one by one, hold, then hand off straight to the end card (no map)
+      seq.forEach((el, i) => kfs.push({ at: 600 + i * 850, fn: () => el.classList.add("on") }));
+      const T_END = 600 + seq.length * 850 + 2800;
+      kfs.push({ at: T_END - 650, fn: () => vision.classList.add("gone") });
 
       // Phase C: high-contrast end card
-      const T_END = L0 + LSPAN + 2400;
       kfs.push({ at: T_END, fn: () => {
         els.stage.querySelectorAll(".center-card").forEach((n) => n.remove());
         clearCaption(); els.body.classList.add("end-dark");
@@ -904,7 +934,6 @@ function buildScenes() {
     sceneScaffold(),
     sceneActive(),
     sceneSafety(),
-    sceneSutra("sutra2", S.today),
     sceneToday(),
     sceneSutra("sutra3", S.pilots),
     scenePilots(),
@@ -913,15 +942,14 @@ function buildScenes() {
     sceneWorksheets(),
     sceneLessons(),
     sceneAdmin(),
-    sceneSutra("sutra5", S.close),
     sceneClose(),
   ];
 }
 const CHAPTERS = ["Open", "The Foundation", "Interlude", "The Principles", "Constructivism",
   "Dialogic Learning", "Scaffolding", "Activity-Based Learning", "Safe by design",
-  "Interlude", "Where we are today", "Interlude", "Classroom Pilots",
+  "Where we are today", "Interlude", "Classroom Pilots",
   "Interlude", "Teachers need AI too", "Worksheets", "Lesson plans", "Admin assistant",
-  "Interlude", "The promise"];
+  "The promise"];
 // No language toggle: the Scaffolding beat shows English/Telugu/Hindi side by side, and the
 // admin beat renders Marathi–English + Telugu–English output inline.
 const HAS_ML = {};
@@ -1008,6 +1036,12 @@ function reelTick() {
       if (sc.duration !== Infinity && t >= sc.duration) Reel.next();
     }
     if (els.rail) els.rail.style.width = ((Reel.idx + localFrac) / Reel.scenes.length * 100).toFixed(2) + "%";
+    if (els.timecode && Reel.totalSec) {
+      const base = Reel.sceneOffsets[Reel.idx] || 0;
+      const local = Math.min(localFrac, 1) * sceneEstSeconds(sc);
+      const elapsed = Math.min(Reel.totalSec, base + local);
+      els.timecode.textContent = fmtTime(elapsed) + " / " + fmtTime(Reel.totalSec);
+    }
   }
   reelRaf = requestAnimationFrame(reelTick);
 }
@@ -1017,11 +1051,12 @@ function clearScene() {
 }
 function triggerWipe() { els.wipe.classList.remove("active"); void els.wipe.offsetWidth; els.wipe.classList.add("active"); }
 function sceneEstSeconds(sc) { return (sc.duration && sc.duration !== Infinity) ? sc.duration / 1000 : 6; }
+function fmtTime(sec) { sec = Math.max(0, sec); const m = Math.floor(sec / 60), s = Math.floor(sec % 60); return m + ":" + String(s).padStart(2, "0"); }
 
 const Reel = {
   scenes: [], idx: -1, startMs: 0, paused: false, _pausedAt: 0, sceneOffsets: [], mlIdx: 0,
   init(s) { this.scenes = s; this.computeOffsets(); },
-  computeOffsets() { let acc = 0; this.sceneOffsets = this.scenes.map((sc) => { const o = acc; acc += sceneEstSeconds(sc); return o; }); },
+  computeOffsets() { let acc = 0; this.sceneOffsets = this.scenes.map((sc) => { const o = acc; acc += sceneEstSeconds(sc); return o; }); this.totalSec = acc; },
   start() { this.goToScene(0); },
   goToScene(i) {
     if (i < 0 || i >= this.scenes.length) return;
