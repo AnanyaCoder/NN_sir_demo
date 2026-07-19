@@ -1248,4 +1248,17 @@ els.startBtn && (function () {
   if (ey && g.eyebrow) ey.textContent = g.eyebrow;
 })();
 
+// Size the fixed 16:9 stage to the ACTUAL visible viewport (innerWidth/innerHeight) — the most
+// reliable fit across mobile browsers, where CSS vh/dvh can disagree with the visible area.
+function fitScreen() {
+  const el = document.getElementById("screen"); if (!el) return;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  el.style.width = Math.round(Math.min(vw, vh * 16 / 9)) + "px";
+  el.style.height = Math.round(Math.min(vh, vw * 9 / 16)) + "px";
+}
+window.addEventListener("resize", fitScreen);
+window.addEventListener("orientationchange", () => setTimeout(fitScreen, 250));
+if (window.visualViewport) window.visualViewport.addEventListener("resize", fitScreen);
+fitScreen();
+
 boot();

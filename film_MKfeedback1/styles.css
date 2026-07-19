@@ -58,6 +58,9 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
+/* mobile: pin the page to the VISIBLE viewport height so the centred 16:9 stage isn't
+   pushed half below the browser toolbar */
+@supports (height:100dvh){ html,body{height:100dvh} }
 body{
   font-family:var(--font); color:var(--ink); overflow:hidden;
   margin:0; background:#0b1220;                 /* letterbox surround (only shows on off-16:9 displays) */
@@ -97,6 +100,12 @@ body{
   .rh-sub{font-size:.95rem;line-height:1.5;color:rgba(238,243,250,.72)}
   /* keep the film paused/quiet behind the hint until they rotate */
   #screen{filter:blur(2px)}
+}
+/* short landscape phones: compact the start gate so the CTA never falls below the fold */
+@media (max-height:440px){
+  .gate-inner{gap:6px;padding:8px}
+  .bird-lg{width:52px;height:52px;border-radius:15px}
+  .gate-foot{display:none}
 }
 b{font-weight:700}
 .grad{color:var(--accent);font-weight:700}
