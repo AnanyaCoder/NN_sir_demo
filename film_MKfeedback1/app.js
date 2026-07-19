@@ -1248,17 +1248,24 @@ els.startBtn && (function () {
   if (ey && g.eyebrow) ey.textContent = g.eyebrow;
 })();
 
-// Size the fixed 16:9 stage to the ACTUAL visible viewport (innerWidth/innerHeight) — the most
-// reliable fit across mobile browsers, where CSS vh/dvh can disagree with the visible area.
+// Size the responsive 16:9 stage to the ACTUAL visible viewport and centre it — reliable across
+// mobile browsers (portrait plays as a widescreen strip), WITHOUT scaling the stage (so the
+// design.md clamp() font caps are respected: cqw/cqh resolve against the real stage size).
 function fitScreen() {
   const el = document.getElementById("screen"); if (!el) return;
   const vw = window.innerWidth, vh = window.innerHeight;
-  el.style.width = Math.round(Math.min(vw, vh * 16 / 9)) + "px";
-  el.style.height = Math.round(Math.min(vh, vw * 9 / 16)) + "px";
+  const w = Math.min(vw, vh * 16 / 9), h = Math.min(vh, vw * 9 / 16);
+  el.style.width = Math.round(w) + "px";
+  el.style.height = Math.round(h) + "px";
+  el.style.left = Math.round((vw - w) / 2) + "px";
+  el.style.top = Math.round((vh - h) / 2) + "px";
+  el.style.transform = "none";
 }
 window.addEventListener("resize", fitScreen);
 window.addEventListener("orientationchange", () => setTimeout(fitScreen, 250));
+window.addEventListener("load", fitScreen);
 if (window.visualViewport) window.visualViewport.addEventListener("resize", fitScreen);
 fitScreen();
+requestAnimationFrame(fitScreen);
 
 boot();
