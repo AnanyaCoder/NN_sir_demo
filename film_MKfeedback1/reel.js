@@ -57,7 +57,7 @@ window.REEL = {
       { title: "Built into TutorBot's Behaviour", sub: "How it responds by default", ico: "🧠" },
       { title: "AI Tutor", sub: "What the student meets", ico: "🧑🏼‍🏫" },
     ],
-    dur: 15000,
+    dur: 14000,
   },
 
   // 3 — SECTION 2 · intro (section title beat)
@@ -91,6 +91,8 @@ window.REEL = {
     kicker: "Dialogic Learning",
     line: "Learning happens",
     punch: "through conversation.",
+    // bottom punchline: "Rote learning" strikes out → "Conceptual understanding"
+    transform: { from: "Rote learning", to: "Conceptual understanding" },
     //subject: "Photosynthesis · Class 7",
     chat: [
       { who: "student", text: "So plants make their food using sunlight." },
@@ -101,42 +103,39 @@ window.REEL = {
     dur: 15500,
   },
 
-  // 6 — Principle 3 · Scaffolding (vertical step sequence + real hint screenshot)
+  // 6 — Principle 3 · Scaffolding (guided discovery). Split across two slides:
+  //   7a — the tutoring dialogue in English; 7b — the SAME dialogue in Hindi + Telugu.
   p3: {
     section: "Principle 3",
     kicker: "Scaffolding",
-    line: "Complex problems are broken",
-    punch: "into manageable steps.",
-    subject: "Algebra · solve 2x + 3 = 11",
-    steps: [
-      "If we subtract 3, what happens?",
-      "Great. Now divide by 2.",
-      "Excellent. What's the final answer?",
+    line: "It doesn't give the answer,",
+    punch: "it helps the student find it.",
+    //subject: "Number patterns · 2, 4, 8, 16 …",
+    chat: [
+      { who: "student", text: "Find the next number: 2, 4, 8, 16, …?" },
+      { who: "bot", q: true, text: "Look at how each number changes — are we adding the same amount each time, or multiplying?" },
+      { who: "student", win: true, text: "The gaps aren't equal, so it's not adding… each number doubles! The next is 32." },
     ],
-    caption: "Instead of giving away the solution, the tutor guides the student one step at a time — in the language of the classroom.",
-    // The SAME scaffolding, shown side by side in three languages. Romanised code-mixed lines
-    // are illustrative and should be checked with a native speaker before production use.
+    caption: "One guiding question — and the student discovers the rule for themselves.",
+    dur: 19500,
+    // 7b — the SAME tutoring, in the child's own language (NCF 2023: mother-tongue learning).
+    // Hindi & Telugu are illustrative translations — verify with a native speaker before production.
+    mlLine: "The same tutoring,",
+    mlPunch: "in the child's own language.",
+    mlCaption: "NCF 2023: a child understands best in their mother tongue.",
+    mlDur: 20000,
     langs: [
-      { label: "English", steps: [
-        "Subtract 3 from both sides, what's left?",
-        "Good. Now divide both sides by 2.",
-        "Excellent. So what is x?",
+      { label: "हिन्दी", who: "Supriya", where: "Ratlam, MP", chat: [
+        { who: "student", text: "अगली संख्या बताओ: 2, 4, 8, 16, …?" },
+        { who: "bot", q: true, text: "देखो हर संख्या कैसे बदलती है — हर बार बराबर जोड़ रहे हैं, या गुणा कर रहे हैं?" },
+        { who: "student", win: true, text: "अंतर बराबर नहीं है, तो जोड़ नहीं… हर संख्या दोगुनी हो रही है! तो अगली संख्या 32 है ?" },
       ] },
-      { label: "Telugu", steps: [
-        //"Rendu vaipu nunchi 3 teesey, em migilindi?",
-        //"Correct! Ippudu rendu vaipu 2 tho divide cheyi.",
-        //"Ok. Ippudu x enta?",
-        "రెండు వైపు నుంచి 3 తీసేయ్, ఏం మిగిలింది?",
-        "ఓకే! ఇప్పుడు రెండు వైపు 2 తో డివైడ్  చెయ్యి.",
-        "సరే. ఇప్పుడు x ఎంత?",
-      ] },
-      { label: "Hindi", steps: [
-        "दोनों तरफ से 3 घटाओ, अब क्या बचा?",
-        "सही! अब दोनों को 2 से डिवाइड करो.",
-        "बहुत बढ़िया. तो x क्या है?",
+      { label: "తెలుగు", who: "Ajay", where: "Kazipet,TS", chat: [
+        { who: "student", text: "తర్వాత సంఖ్య చెప్పు: 2, 4, 8, 16, …?" },
+        { who: "bot", q: true, text: "ప్రతి సంఖ్య ఎలా మారుతుందో చూడు — ప్రతిసారి ఒకేలా కూడుతున్నామా, లేక గుణిస్తున్నామా?" },
+        { who: "student", win: true, text: "తేడాలు సమానంగా లేవు, కాబట్టి కూడిక కాదు… ప్రతి సంఖ్య రెట్టింపు అవుతోంది! తర్వాతది 32 ?" },
       ] },
     ],
-    dur: 16500,
   },
 
   // 6b — Rooted in IKS · Geometry (short breather between Scaffolding and Activity-Based)
@@ -180,16 +179,17 @@ window.REEL = {
     kicker: "Safe by design",
     line: "Before it teaches anything,",
     punch: "it keeps a child safe.",
-    subject: "A real refusal",
+    //subject: "A real refusal",
     chat: [
       { who: "student", text: "Sir, how can I fake a stomach ache? I don't want to go to school tomorrow." },
       { who: "bot", text: "I can't help with faking an illness — that could be unsafe." },
-      { who: "bot", text: "It sounds like a really hard day. Please talk to a parent or a teacher you trust — they're there to help you. 💛" },
+      { who: "bot", text: "It sounds like a really hard day. Please talk to a parent or a teacher you trust — they're there to help you." },
     ],
+    // icons rendered as flat line SVGs in app.js (calm, no emoji — child-safety topic)
     steps: [
-      { ico: "🛑", t: "Refuses the unsafe request" },
-      { ico: "💛", t: "Responds with care, not alarm" },
-      { ico: "🧑‍🏫", t: "Points to a trusted adult" },
+      { t: "Refuses the unsafe request" },
+      { t: "Responds with care, not alarm" },
+      { t: "Points to a trusted adult" },
     ],
     dur: 21000,
   },
@@ -228,7 +228,7 @@ window.REEL = {
       where: "Andhra Pradesh",
       partner: "In partnership with the Government of Andhra Pradesh",
     },
-    dur: 10500,
+    dur: 12000,
   },
 
   // 10 — SECTION 4B · Teachers need AI too (the turn: student side → teacher side)

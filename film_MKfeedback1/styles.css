@@ -240,7 +240,7 @@ body.paused .stage::after{content:"⏸ paused — click or Space to resume";posi
 .bub{padding:12px 16px;border-radius:16px;font-size:var(--fs-body);line-height:1.45;position:relative}
 .msg.bot .bub{background:var(--bg2);border:1px solid var(--line);border-top-left-radius:5px;color:var(--ink)}
 .msg.bot .bub.q{background:var(--peach);border-color:var(--peach2)}
-.msg.student .bub{background:var(--coral);color:#fff;border-top-right-radius:5px;font-weight:500}
+.msg.student .bub{background:#F1EFE8;color:var(--ink);border:1px solid var(--line);border-top-right-radius:5px;font-weight:500}
 .qtag{display:block;font-size:var(--fs-label);font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
 .msg.student .bub.win{background:linear-gradient(135deg,#39b978,#279e63)}
 .wintag{display:inline-block;margin-left:8px;font-size:var(--fs-label);font-weight:700;opacity:.9}
@@ -469,6 +469,20 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
   background:var(--peach);border:1px solid var(--peach2);border-radius:12px;padding:11px 18px;
   opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
 .beat-cap.on{opacity:1;transform:none}
+/* "Rote learning" → strike → "Conceptual understanding" punchline */
+.rote-swap{display:inline-flex;align-items:center;gap:16px;font-family:var(--disp);font-weight:700;
+  font-size:clamp(20px,2.5cqw,32px);background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:12px 24px;box-shadow:0 16px 40px -28px rgba(120,60,20,.5);
+  opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.rote-swap.on{opacity:1;transform:none}
+.rs-from{position:relative;color:var(--ink2);transition:opacity .4s ease}
+.rs-from::after{content:"";position:absolute;left:-3px;top:54%;height:3px;width:0;background:var(--bad);border-radius:2px;transition:width .55s ease}
+.rs-from.struck{opacity:.5}
+.rs-from.struck::after{width:calc(100% + 6px)}
+.rs-arrow,.rs-to{opacity:0;transform:translateX(-8px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.rs-arrow{color:var(--ink2)}
+.rs-to{color:var(--accent);font-weight:800}
+.rs-arrow.on,.rs-to.on{opacity:1;transform:none}
 
 /* --- Section 1 · Foundation pipeline --- */
 .found-card{gap:22px}
@@ -510,6 +524,9 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
 
 /* --- Principles (chat) — keep frame short so the callout fits --- */
 .principle-card .chat-frame{max-height:46cqh}
+/* slide 7 (Scaffolding) has a 4-message dialogue — give it a taller frame so it doesn't clip/lurch */
+body[data-scene="p3"] .chat-frame{max-height:56cqh}
+body[data-scene="p3"] .center-card{top:20cqh}
 
 /* --- Principle 3 · Scaffolding ladder --- */
 .scaf-card,.lessons2-card{flex-flow:row wrap;align-items:center;justify-content:center;gap:26px}
@@ -544,43 +561,35 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
 .measure-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%}
 .measure-lead{font-size:var(--fs-body);color:var(--ink2);letter-spacing:.02em}
 .measure-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;width:min(900px,92cqw)}
-/* ── Slide 12 · asymmetric: left-aligned launch block + a four-point radar/dial ── */
-.pilots2-card{justify-content:center;align-items:center;gap:0}
-.pilots-split{display:flex;align-items:center;justify-content:space-between;gap:36px;width:min(1140px,95cqw)}
-.pilots-left{flex:0 0 41%;text-align:left}
-.pl-kicker,.pl-head,.pl-partner{opacity:0;transform:translateX(-16px);
-  transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
-[data-l].on{opacity:1;transform:none}
-.pl-kicker{font-size:var(--fs-kicker);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:16px}
-.pl-head{font-family:var(--disp);font-weight:700;font-size:var(--fs-headline);line-height:1.5;color:var(--ink);margin-bottom:22px}
-.pl-partner{display:flex;align-items:center;gap:13px;font-size:var(--fs-body);color:var(--ink2);line-height:1.3}
-.pl-badge{width:46px;height:46px;flex:none;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(120,60,20,.28))}
-/* right column: measures radar */
-.pilots-right{flex:1;display:flex;flex-direction:column;align-items:center;gap:20px;min-width:0}
-.pilots-right .pm-lead{font-size:var(--fs-label);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800;
-  opacity:0;transform:translateX(-16px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
-.radar{position:relative;width:min(272px,29cqw);aspect-ratio:1}
-.radar-svg{width:100%;height:100%;overflow:visible}
-.radar-grid{opacity:0;transition:opacity .6s ease}
-.radar-grid.on{opacity:1}
-.radar-grid polygon{fill:none;stroke:var(--line);stroke-width:1.4}
-.radar-grid line{stroke:var(--line);stroke-width:1.4}
-.radar-fill{fill:rgba(239,107,53,.13);stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round;
-  transform-origin:150px 150px;transform:scale(0);opacity:0;
-  transition:transform .75s cubic-bezier(.2,.8,.2,1),opacity .5s ease}
-.radar-fill.on{transform:scale(1);opacity:1}
-.radar-node{fill:var(--accent);transform-origin:center;transform:scale(0);opacity:0;
-  transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .35s ease}
-.radar-node.on{transform:scale(1);opacity:1}
-.rlabel{position:absolute;display:flex;flex-direction:column;align-items:center;gap:5px;width:140px;text-align:center;
-  opacity:0;transition:opacity .5s ease}
-.rlabel.on{opacity:1}
-.rlabel span{font-size:var(--fs-label);font-weight:700;color:var(--ink);line-height:1.2}
-.ric{width:26px;height:26px;fill:none;stroke:var(--accent);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
-.r-top{left:50%;top:0;transform:translate(-50%,calc(-100% - 6px))}
-.r-bottom{left:50%;bottom:0;transform:translate(-50%,calc(100% + 6px))}
-.r-left{right:100%;top:50%;transform:translate(-6px,-50%)}
-.r-right{left:100%;top:50%;transform:translate(6px,-50%)}
+/* ── Slide 12 · centred launch (consistent with the rest of the film) ── */
+.pilots2-card{justify-content:center;align-items:center}
+.pilots-center{display:flex;flex-direction:column;align-items:center;text-align:center;width:min(1120px,94cqw)}
+.pc-kicker,.pc-partner,.pc-lead,.hl{opacity:0;transform:translateY(18px);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.16,.8,.3,1)}
+.pc-kicker.on,.pc-partner.on,.pc-lead.on,.hl.on{opacity:1;transform:none}
+.pc-kicker{font-size:var(--fs-kicker);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:18px}
+.pc-head{font-family:var(--disp);font-weight:700;font-size:clamp(46px,6.4cqw,84px);line-height:1.05;letter-spacing:-.01em;color:var(--ink);margin-bottom:26px}
+.pc-head .hl{display:block}
+.pc-partner{display:inline-flex;align-items:center;gap:14px;font-size:var(--fs-body);color:var(--ink2);line-height:1.3;margin-bottom:46px}
+.pl-badge{width:52px;height:52px;flex:none;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(120,60,20,.28))}
+.pc-lead{font-size:var(--fs-label);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:22px}
+.pc-measures{display:flex;justify-content:center;gap:22px;width:100%}
+.pc-m{flex:1 1 0;max-width:250px;display:flex;flex-direction:column;align-items:center;gap:14px;
+  background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 18px;
+  box-shadow:0 18px 40px -28px rgba(120,60,20,.5);
+  opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.pc-m.on{opacity:1;transform:none}
+.mico{width:60px;height:60px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:50%;
+  background:rgba(239,107,53,.10);border:1px solid rgba(239,107,53,.24);
+  transform:scale(.55);opacity:0;transition:transform .5s cubic-bezier(.2,.9,.3,1.5),opacity .4s ease}
+.pc-m.on .mico{transform:scale(1);opacity:1}
+.mtext{font-size:var(--fs-body);font-weight:700;color:var(--ink);line-height:1.25}
+.ric{width:32px;height:32px;flex:none;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+/* icons stroke themselves in when the card lands */
+.ric>*{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .8s ease .25s}
+.pc-m.on .ric>*{stroke-dashoffset:0}
+.ric .fdot{fill:var(--accent);stroke:none;opacity:0;transition:opacity .3s ease .85s}
+.pc-m.on .ric .fdot{opacity:1}
 /* Andhra Pradesh launch + partnership band (legacy) */
 .pilot-launch{display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:22px;
   background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 24px;
@@ -729,7 +738,7 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
 .cap-title{font-size:var(--fs-headline);max-width:32ch}
 /* the four principle beats carry larger headlines */
 body[data-scene="p1"] .cap-title,body[data-scene="p2"] .cap-title,
-body[data-scene="p3"] .cap-title,body[data-scene="p4"] .cap-title{font-size:var(--fs-headline);max-width:26ch}
+body[data-scene="p3"] .cap-title,body[data-scene="p3ml"] .cap-title,body[data-scene="p4"] .cap-title{font-size:var(--fs-headline);max-width:26ch}
 .center-card{top:22cqh;bottom:9cqh}
 /* the text-heavy claim beats: slightly smaller settled headline */
 body[data-scene="foundation"] .cap-title,
@@ -738,7 +747,7 @@ body[data-scene="lessons"] .cap-title,
 body[data-scene="worksheets"] .cap-title,
 body[data-scene="pilots"] .cap-title{font-size:var(--fs-headline);max-width:40ch}
 /* asymmetric pilots: centre the split row vertically */
-body[data-scene="pilots"] .center-card{top:12cqh;bottom:12cqh}
+body[data-scene="pilots"] .center-card{top:8cqh;bottom:8cqh}
 body[data-scene="foundation"] .center-card,
 body[data-scene="lessons"] .center-card,
 body[data-scene="worksheets"] .center-card{top:23cqh}
@@ -747,19 +756,18 @@ body[data-scene="worksheets"] .center-card{top:23cqh}
 /* column-layout scenes: top-anchor so tall 1.2x content grows down, not up into the headline.
    (lessons is a ROW layout — excluded, since flex-start there would left-align it) */
 body[data-scene="worksheets"] .center-card,
-body[data-scene="admin"] .center-card,
-body[data-scene="p3"] .center-card{justify-content:flex-start}
+body[data-scene="admin"] .center-card{justify-content:flex-start}
 body[data-scene="worksheets"] .center-card{top:24cqh}
 /* compact the closing callout so it doesn't dominate the two worksheets */
 body[data-scene="worksheets"] .beat-cap{font-size:var(--fs-body);max-width:46ch;padding:9px 15px;line-height:1.4}
 body[data-scene="admin"] .center-card{top:27cqh;bottom:6cqh}
 /* teacherTurn is a dense split layout — keep its narration sub compact so it clears the mode cards */
 body[data-scene="teacherTurn"] .cap-sub{font-size:var(--fs-body);max-width:46ch}
-body[data-scene="safety"] .center-card{top:22cqh}
+body[data-scene="safety"] .center-card{top:21cqh;bottom:7cqh}
 /* lens sim lowered so the 2-line headline clears the sim card (but not so far the legend clips) */
 body[data-scene="p4"] .center-card{top:24cqh;bottom:5cqh}
 /* teacher-turn cards pushed right, clear of the chalkboard on the left */
-body[data-scene="teacherTurn"] .center-card{top:15cqh;left:50%;right:auto;transform:translateX(-50%);width:min(1060px,94cqw)}
+body[data-scene="teacherTurn"] .center-card{top:11cqh;left:50%;right:auto;transform:translateX(-50%);width:min(1210px,96cqw)}
 /* ── Slide 14 · the classroom blackboard (chalk-written two-sides story) ── */
 .board-card{justify-content:flex-start;align-items:center}
 .board{width:100%;filter:drop-shadow(0 46px 80px rgba(60,30,10,.45))}
@@ -767,7 +775,7 @@ body[data-scene="teacherTurn"] .center-card{top:15cqh;left:50%;right:auto;transf
     radial-gradient(120% 120% at 50% 0%, rgba(255,255,255,.05), transparent 60%),
     linear-gradient(180deg,#2f5744,#213f33);
   border:14px solid #8a5a30;border-top-color:#a06c3c;border-bottom-color:#6f4522;
-  border-radius:12px;padding:32px 46px 34px;overflow:hidden}
+  border-radius:12px;padding:52px 62px 56px;overflow:hidden}
 .board-surface::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(140% 120% at 20% 120%, rgba(255,255,255,.06), transparent 55%);opacity:.7}
 .board-tray{height:14px;margin:0 22px;border-radius:0 0 9px 9px;position:relative;
@@ -776,22 +784,22 @@ body[data-scene="teacherTurn"] .center-card{top:15cqh;left:50%;right:auto;transf
 .board-tray .chalk-a{left:16%;width:56px;background:#f4efe6}
 .board-tray .chalk-b{left:30%;width:34px;background:#ffd98a}
 /* chalk headline + hand-drawn underline */
-.chalk-head{position:relative;text-align:center;font-family:var(--disp);font-weight:700;font-size:var(--fs-headline);
-  color:rgba(255,255,255,.95);letter-spacing:.4px;text-shadow:0 0 10px rgba(255,255,255,.14);margin-bottom:26px;
+.chalk-head{position:relative;text-align:center;font-family:var(--disp);font-weight:700;font-size:clamp(26px,3.4cqw,44px);
+  color:rgba(255,255,255,.95);letter-spacing:.4px;text-shadow:0 0 10px rgba(255,255,255,.14);margin-bottom:38px;
   opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
 .chalk-head.on{opacity:1;transform:none}
 .chalk-head::after{content:"";position:absolute;left:50%;bottom:-11px;width:54%;height:3px;border-radius:3px;
   background:rgba(255,255,255,.55);transform:translateX(-50%) scaleX(0);transform-origin:center;transition:transform .7s cubic-bezier(.2,.8,.2,1) .25s}
 .chalk-head.on::after{transform:translateX(-50%) scaleX(1)}
 .chalk-cols{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:0}
-.chalk-col{padding:0 30px}
-.chalk-tag{font-size:var(--fs-label);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.66);margin-bottom:16px;
+.chalk-col{padding:0 40px}
+.chalk-tag{font-size:calc(var(--fs-label) + 2px);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.66);margin-bottom:24px;
   opacity:0;transform:translateY(6px);transition:opacity .5s ease,transform .5s ease}
 .chalk-tag b{margin-left:6px}
 .c-done .chalk-tag b{color:#9fe6ac}
 .c-next .chalk-tag b{color:#ffd98a}
-.chalk-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
-.chalk-col li{display:flex;gap:12px;align-items:baseline;font-size:var(--fs-body);color:rgba(255,255,255,.92);line-height:1.3;
+.chalk-col ul{list-style:none;display:flex;flex-direction:column;gap:18px}
+.chalk-col li{display:flex;gap:12px;align-items:baseline;font-size:clamp(18px,2.2cqw,28px);color:rgba(255,255,255,.92);line-height:1.3;
   opacity:0;transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
 .c-done li{transform:translateX(-10px)} .c-next li{transform:translateX(10px)}
 .chalk-col li.on,.chalk-tag.on{opacity:1;transform:none}
@@ -847,18 +855,21 @@ body[data-scene="teacherTurn"] .center-card{top:15cqh;left:50%;right:auto;transf
 .sim-note{margin-top:8px;font-size:var(--fs-label);color:var(--ink2);font-style:italic;text-align:center}
 
 /* --- Safe by design --- */
-.safety-card{justify-content:center;gap:18px}
-.safety-card .chat-frame{width:min(680px,90cqw);max-height:44cqh;align-self:center}
-.safe-flow{display:flex;align-items:stretch;justify-content:center;gap:12px;flex-wrap:wrap}
-.safe-step{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
-  border-radius:14px;padding:14px 18px;min-width:158px;box-shadow:0 16px 40px -28px rgba(120,60,20,.5);
+.safety-card{justify-content:center;gap:12px}
+/* same chat style as slide 7 (full-size bubbles); the frame is bounded so it scrolls
+   internally as messages arrive, keeping the guardrail flow visible below */
+.safety-card .chat-frame{width:min(680px,90cqw);max-height:42cqh;align-self:center}
+.safe-flow{display:flex;align-items:stretch;justify-content:center;gap:10px;flex-wrap:nowrap}
+.safe-step{display:flex;flex-direction:column;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+  border-radius:14px;padding:11px 16px;min-width:0;flex:1 1 0;max-width:220px;box-shadow:0 16px 40px -28px rgba(120,60,20,.5);
   opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
 .safe-step.on{opacity:1;transform:none}
 .safe-step:first-child{border-left-color:var(--bad)}
 .safe-step:nth-child(3){border-left-color:var(--accent2)}
 .safe-step:last-child{border-left-color:var(--ok)}
-.ss-ico{font-size:var(--fs-headline)}
-.ss-t{font-size:var(--fs-body);color:var(--ink);font-weight:600;text-align:center;line-height:1.3}
+.ss-ico{display:flex;align-items:center;justify-content:center}
+.ss-ico .ric{width:26px;height:26px}
+.ss-t{font-size:calc(var(--fs-body) + 2px);color:var(--ink);font-weight:600;text-align:center;line-height:1.3}
 .sf-arrow{align-self:center;color:var(--accent);font-weight:700;font-size:var(--fs-body);opacity:0;transition:opacity .4s ease}
 .sf-arrow.on{opacity:1}
 
@@ -1047,8 +1058,8 @@ body.end-dark .visual-layer,body.end-dark .scrim{opacity:0}
 .scaf3-box{padding:20px 22px}
 .s3-t{font-size:var(--fs-body);line-height:1.5}
 .s3-lang{font-size:var(--fs-body)}
-.safe-step{padding:16px 20px}
-.ss-t{font-size:var(--fs-body)}
+.safe-step{padding:11px 16px}
+.ss-t{font-size:calc(var(--fs-body) + 2px)}
 .lessons2-card .lp2-step .pt,.lp2-main.solo .lp2-step .pt{font-size:var(--fs-body);line-height:1.45}
 .lp2-label{font-size:var(--fs-label)}
 .admin-card .vline{font-size:var(--fs-body);padding:10px 15px}
@@ -1060,10 +1071,30 @@ body.end-dark .visual-layer,body.end-dark .scrim{opacity:0}
 /* a touch more air on foundation (p4 reverted to its earlier vertical-stats layout) */
 body[data-scene="foundation"] .center-card{top:29cqh}
 body[data-scene="foundation"] .cap-title{font-size:var(--fs-headline);max-width:42ch}
-/* 3-language cards: top-anchored (above) + slightly tighter step text so all 3 fit */
-body[data-scene="p3"] .center-card{top:31cqh}
-body[data-scene="p3"] .s3-t{font-size:var(--fs-label)}
-body[data-scene="p3"] .s3-steps{gap:9px}
+/* 7b — Scaffolding in two languages: two chat columns side by side */
+body[data-scene="p3ml"] .center-card{top:25cqh;bottom:6cqh;gap:14px}
+.scaf-ml{display:flex;gap:22px;justify-content:center;align-items:stretch;width:min(1060px,95cqw);flex:1 1 auto;min-height:0;max-height:48cqh}
+.scaf-ml-col{width:auto;flex:1 1 0;min-width:0;max-height:100%}
+.scaf-ml-col .chat-scroll{padding:16px}
+.scaf-ml-col .bub{font-size:var(--fs-body)}
+.scaf-ml-col .ct-subj{font-family:var(--disp);color:var(--ink);font-weight:700}
+/* 22-language footer strip (native scripts) — one single line, faint */
+.lang-strip{width:100%;text-align:center;flex:none;
+  opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.lang-strip.on{opacity:1;transform:none}
+.ls-lead{font-size:calc(var(--fs-label) + 2px);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:8px}
+.ls-names{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:5px 16px;width:100%;
+  font-size:clamp(14px,1.6cqw,19px);color:var(--ink2);line-height:1.35}
+.ls-names span{white-space:nowrap;opacity:.75}
+/* pedagogy word cloud — faint, slowly drifting behind an Interlude */
+.wordcloud{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+  opacity:0;animation:wcFade 1.4s ease .3s forwards}
+@keyframes wcFade{to{opacity:1}}
+.wc-term{position:absolute;font-family:var(--disp);font-weight:700;white-space:nowrap;letter-spacing:.01em;
+  font-size:calc(var(--fs-body) * var(--wc-s,1));color:rgba(120,72,40,.16);
+  transform:translate(-50%,-50%);animation:wcDrift ease-in-out infinite}
+.wc-strike{text-decoration:line-through;color:rgba(120,72,40,.11)}
+@keyframes wcDrift{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-62%)}}
 
 /* --- slide 13 (Classroom Pilots): larger tiles + lead --- */
 body[data-scene="pilots"] .measure-lead{font-size:var(--fs-body)}

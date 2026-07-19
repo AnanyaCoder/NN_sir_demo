@@ -92,11 +92,14 @@ function typeKfs(el, text, start, step) {
 }
 // Sutradhara — a short standalone "chapter card": one quiet italic line, centred, with a small
 // flourish, on a calm backdrop. A watching voice that hands you into the next section.
-function sceneSutra(id, text) {
+function sceneSutra(id, text, cloud) {
   return makeClockScene({
     id, duration: 4200,
     enter() {
-      clearCaption(); showVisual(buildMotes(14));
+      clearCaption();
+      const viz = buildMotes(14);
+      if (cloud) viz.appendChild(buildWordCloud(cloud));
+      showVisual(viz);
       const card = showCard(
         `<div class="sutra-slide"><span class="sutra-rule"></span><div class="sutra-text">${text}</div></div>`,
         "sutra-card");
@@ -104,6 +107,24 @@ function sceneSutra(id, text) {
       return [{ at: 450, fn: () => line.classList.add("on") }];
     },
   });
+}
+// faint, slowly-drifting pedagogy terms behind an Interlude card
+function buildWordCloud(terms) {
+  const c = document.createElement("div"); c.className = "wordcloud";
+  // scattered anchor positions (%) — spread across the frame, clear of the centre line
+  const spots = [[15, 20], [67, 15], [41, 11], [86, 34], [9, 50], [60, 72], [28, 84], [85, 64]];
+  terms.forEach((term, i) => {
+    const el = document.createElement("span");
+    el.className = "wc-term" + (term.strike ? " wc-strike" : "");
+    el.textContent = term.t;
+    const p = spots[i % spots.length];
+    el.style.left = p[0] + "%"; el.style.top = p[1] + "%";
+    el.style.setProperty("--wc-s", (term.s || 1));
+    el.style.animationDuration = (16 + i * 2) + "s";
+    el.style.animationDelay = (-i * 1.7) + "s";
+    c.appendChild(el);
+  });
+  return c;
 }
 // Stream a headline into the top caption word by word; returns {kfs, end}.
 // All words are pre-placed (final layout fixed) and faded in one by one — so the line NEVER
@@ -335,9 +356,9 @@ function sceneFoundation() {
         const onAt = t;
         kfs.push({ at: onAt, fn: () => s.classList.add("on") });
         const sub = s.querySelector(".ps-sub");
-        if (sub) kfs.push({ at: onAt + 450, fn: () => sub.classList.add("in") });   // sub-heading arrives a beat later
-        t += 850;
-        if (arrows[i]) { kfs.push({ at: t, fn: () => arrows[i].classList.add("on") }); t += 560; }
+        if (sub) kfs.push({ at: onAt + 520, fn: () => sub.classList.add("in") });   // sub-heading arrives a beat later
+        t += 1100;
+        if (arrows[i]) { kfs.push({ at: t, fn: () => arrows[i].classList.add("on") }); t += 760; }
       });
       kfs.push({ at: t + 200, fn: () => stages[stages.length - 1].classList.add("live") });
       return kfs;
@@ -368,11 +389,45 @@ function scenePrincipleChat(id, R) {
     id, duration: R.dur,
     enter() {
       clearCaption(); showVisual(buildMotes(20));
-      setCaption(`${R.kicker}`, "", R.subject);
+      setCaption(`${R.kicker}`, "", R.sub || "");
       const card = showCard(``, "chat-card principle-card");
       const cf = chatFrame({ subject: R.subject }); card.appendChild(cf);
       cf.style.opacity = "0"; cf.style.transition = "opacity .5s ease";
       // 1 — stream the headline; 2 — pause; 3 — the chat fades in and plays
+      const st = streamTitle(R.line, R.punch, 1300, 155);
+      const chatStart = st.end + 1100;
+      st.kfs.push({ at: chatStart - 400, fn: () => { cf.style.opacity = "1"; } });
+      const { kfs, end } = chatKfs(cf.querySelector(".chat-scroll"), R.chat, chatStart);
+      const all = st.kfs.concat(kfs);
+      if (R.transform) {
+        // bottom punchline: show "from", strike it through, then reveal "to"
+        const swap = document.createElement("div"); swap.className = "rote-swap";
+        swap.innerHTML = `<span class="rs-from">${R.transform.from}</span><span class="rs-arrow">→</span><span class="rs-to">${R.transform.to}</span>`;
+        card.appendChild(swap);
+        const from = swap.querySelector(".rs-from"), arrow = swap.querySelector(".rs-arrow"), to = swap.querySelector(".rs-to");
+        all.push({ at: end + 400, fn: () => swap.classList.add("on") });
+        all.push({ at: end + 1600, fn: () => from.classList.add("struck") });
+        all.push({ at: end + 2400, fn: () => { arrow.classList.add("on"); to.classList.add("on"); } });
+      } else {
+        all.push(calloutKf(card, R.caption, end + 300));
+      }
+      return all;
+    },
+  });
+}
+
+// ---- 6 — Principle 3 · Scaffolding (same steps, three languages side by side) -
+// 7a — Scaffolding · the Socratic dialogue in English (reuses the chat system)
+function sceneScaffold() {
+  const R = REEL.p3;
+  return makeClockScene({
+    id: "p3", duration: R.dur,
+    enter() {
+      clearCaption(); showVisual(buildMotes(18));
+      setCaption(`${R.kicker}`, "", "");
+      const card = showCard(``, "chat-card principle-card");
+      const cf = chatFrame({ subject: R.subject }); card.appendChild(cf);
+      cf.style.opacity = "0"; cf.style.transition = "opacity .5s ease";
       const st = streamTitle(R.line, R.punch, 1300, 155);
       const chatStart = st.end + 1100;
       st.kfs.push({ at: chatStart - 400, fn: () => { cf.style.opacity = "1"; } });
@@ -384,40 +439,56 @@ function scenePrincipleChat(id, R) {
   });
 }
 
-// ---- 6 — Principle 3 · Scaffolding (same steps, three languages side by side) -
-function sceneScaffold() {
+// 7b — Scaffolding · the SAME dialogue tutored in Hindi + Telugu, side by side
+function sceneScaffoldML() {
   const R = REEL.p3;
   return makeClockScene({
-    id: "p3", duration: R.dur,
+    id: "p3ml", duration: R.mlDur,
     enter() {
-      clearCaption(); showVisual(buildMotes(16));
+      clearCaption(); showVisual(buildMotes(18));
       setCaption(`${R.kicker}`, "", "");
-      const card = showCard(
-        `<div class="scaf-subject">${R.subject}</div>
-         <div class="scaf3">${R.langs.map((l) =>
-          `<div class="scaf3-box">
-             <div class="s3-lang">${l.label}</div>
-             <div class="s3-steps">${l.steps.map((s, i) =>
-              `<div class="s3-step"><span class="s3-n">${i + 1}</span><span class="s3-t">${s}</span></div>`).join("")}</div>
-           </div>`).join("")}</div>`, "scaf3-card");
-      const subject = card.querySelector(".scaf-subject");
-      const boxes = [...card.querySelectorAll(".scaf3-box")];
-      // 1 — stream the headline; 2 — the problem label appears; 3 — the boxes and steps reveal
-      const st = streamTitle(R.line, R.punch, 1300, 155);
-      const kfs = st.kfs;
-      kfs.push({ at: st.end + 350, fn: () => subject.classList.add("on") });
-      const base = st.end + 1150;
-      boxes.forEach((b, i) => kfs.push({ at: base + i * 320, fn: () => b.classList.add("on") }));
-      let t = base + 1100;
-      for (let r = 0; r < 3; r++) {
-        boxes.forEach((b, bi) => { const el = b.querySelectorAll(".s3-step")[r]; if (el) kfs.push({ at: t + bi * 170, fn: () => el.classList.add("on") }); });
-        t += 1650;
-      }
-      kfs.push(calloutKf(card, R.caption, t + 100));
-      return kfs;
+      const card = showCard(`<div class="scaf-ml"></div>`, "scaf-ml-card");
+      const wrap = card.querySelector(".scaf-ml");
+      const frames = R.langs.map((l) => {
+        // human touch: a named student, in their state, tutored in their own language
+        const cf = chatFrame({ subject: l.who ? `${l.who} · ${l.where}` : l.label });
+        cf.classList.add("scaf-ml-col");
+        cf.style.opacity = "0"; cf.style.transition = "opacity .5s ease";
+        wrap.appendChild(cf); return cf;
+      });
+      const scrolls = frames.map((f) => f.querySelector(".chat-scroll"));
+      const st = streamTitle(R.mlLine, R.mlPunch, 1300, 155);
+      const chatStart = st.end + 1100;
+      st.kfs.push({ at: chatStart - 400, fn: () => frames.forEach((f) => { f.style.opacity = "1"; }) });
+      // both columns reveal the same turn together, paced by the longest text in that turn
+      const kfs = []; let t = chatStart;
+      R.langs[0].chat.forEach((m, i) => {
+        const longest = Math.max(...R.langs.map((l) => readMs(l.chat[i].text)));
+        if (m.who === "bot") {
+          kfs.push({ at: t, fn: () => scrolls.forEach((s) => typing(s, true)) });
+          const appear = t + 1500;
+          kfs.push({ at: appear, fn: () => scrolls.forEach((s, ci) => { typing(s, false); addBubble(s, R.langs[ci].chat[i]); }) });
+          t = appear + longest * 1.3;
+        } else {
+          kfs.push({ at: t, fn: () => scrolls.forEach((s, ci) => addBubble(s, R.langs[ci].chat[i])) });
+          t = t + longest * 1.05;
+        }
+      });
+      // footer: the same lesson reaches all 22 official Indian languages (native scripts)
+      const strip = document.createElement("div"); strip.className = "lang-strip";
+      strip.innerHTML = `<div class="ls-lead"> NCF 2023 calls for teaching in a child's familiar language.</div>` +
+        `<div class="ls-names">${LANGS_22.map((n) => `<span>${n}</span>`).join("")}</div>`;
+      card.appendChild(strip);
+      const all = st.kfs.concat(kfs);
+      all.push({ at: t + 300, fn: () => strip.classList.add("on") });
+      return all;
     },
   });
 }
+// The 22 scheduled (8th Schedule) languages of India, each in its own native script.
+const LANGS_22 = ["অসমীয়া", "বাংলা", "बड़ो", "डोगरी", "ગુજરાતી", "हिन्दी", "ಕನ್ನಡ", "कॉशुर",
+  "कोंकणी", "मैथिली", "മലയാളം", "মৈতৈলোন্", "मराठी", "नेपाली", "ଓଡ଼ିଆ", "ਪੰਜਾਬੀ",
+  "संस्कृतम्", "ᱚᱞ ᱪᱤᱠᱤ", "سنڌي", "தமிழ்", "తెలుగు", "اردو"];
 
 // ---- 6b — Rooted in IKS (split screen, short breather) --------------
 function sceneIKS() {
@@ -552,9 +623,15 @@ function sceneSafety() {
       const card = showCard(``, "safety-card");
       const cf = chatFrame({ subject: R.subject }); card.appendChild(cf);
       cf.style.opacity = "0"; cf.style.transition = "opacity .5s ease";
+      // flat single-stroke line icons (accent orange) — calm treatment for a child-safety beat
+      const ICONS = [
+        '<svg viewBox="0 0 24 24" class="ric"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.28 1.28"/></svg>',   // refuses (stopping hand)
+        '<svg viewBox="0 0 24 24" class="ric"><path d="M12 20.4C12 20.4 3.7 15 3.7 8.9C3.7 6 5.9 4 8.3 4C10 4 11.3 5 12 6.4C12.7 5 14 4 15.7 4C18.1 4 20.3 6 20.3 8.9C20.3 15 12 20.4 12 20.4Z"/></svg>',   // care (heart outline)
+        '<svg viewBox="0 0 24 24" class="ric"><circle cx="12" cy="8" r="3.3"/><path d="M6 18.6c0-3.7 12-3.7 12 0"/></svg>',                                  // trusted adult (person)
+      ];
       const flow = document.createElement("div"); flow.className = "safe-flow";
       flow.innerHTML = R.steps.map((s, i) =>
-        `${i ? `<span class="sf-arrow">→</span>` : ""}<div class="safe-step"><span class="ss-ico">${s.ico}</span><span class="ss-t">${s.t}</span></div>`).join("");
+        `${i ? `<span class="sf-arrow">→</span>` : ""}<div class="safe-step"><span class="ss-ico">${ICONS[i]}</span><span class="ss-t">${s.t}</span></div>`).join("");
       card.append(flow);
       const steps = [...flow.querySelectorAll(".safe-step")];
       const arrows = [...flow.querySelectorAll(".sf-arrow")];
@@ -584,13 +661,18 @@ function sceneToday() {
     id: "today", duration: R.dur,
     enter() {
       clearCaption(); showVisual(buildMotes(16));
-      setCaption(`${R.kicker}`, `${R.line} <span class="grad">${R.punch}</span>`, "");
+      setCaption(`${R.kicker}`, "", "");   // 1 — "Where we are today" lands first
       const card = showCard(
         `<div class="check-list">${R.items.map((it) =>
           `<div class="check-row"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M5 13 L10 18 L19 6"/></svg></span><span class="check-text">${it}</span></div>`).join("")}</div>`,
         "check-card");
       const rows = [...card.querySelectorAll(".check-row")];
-      return rows.map((r, i) => ({ at: 1600 + i * 1400, fn: () => r.classList.add("on") }));
+      // 2 — then the headline streams in; 3 — then the checklist ticks through
+      const st = streamTitle(R.line, R.punch, 1500, 150);
+      const kfs = st.kfs;
+      const base = st.end + 900;
+      rows.forEach((r, i) => kfs.push({ at: base + i * 1250, fn: () => r.classList.add("on") }));
+      return kfs;
     },
   });
 }
@@ -603,54 +685,40 @@ function scenePilots() {
     enter() {
       clearCaption(); showVisual(buildMotes(18));
       const L = R.launch;
-      // Asymmetric: left-aligned launch block (seal as a small credential badge) + a four-point
-      // radar/dial on the right for the measures (line icons, single accent colour — no emoji).
+      // Centred like the rest of the film: kicker → big launch headline → partnership (seal badge)
+      // → the four measures as a centred row of cards (consistent orange line icons, no emoji).
+      // line icons that stroke themselves in (pathLength="1" + dash animation, see styles.css)
       const ICONS = [
-        '<svg viewBox="0 0 22 22" class="ric"><polyline points="3,3 3,19 19,19"/><polyline points="5.5,14.5 9,10 12,12 17.5,5.5"/></svg>',        // learning outcomes (chart)
-        '<svg viewBox="0 0 22 22" class="ric"><path d="M11 3 L12.8 9.2 L19 11 L12.8 12.8 L11 19 L9.2 12.8 L3 11 L9.2 9.2 Z"/></svg>',              // student engagement (spark)
-        '<svg viewBox="0 0 22 22" class="ric"><circle cx="11" cy="7.6" r="3.2"/><path d="M4.6 18.4 C4.6 13, 17.4 13, 17.4 18.4"/></svg>',           // teacher adoption (person)
-        '<svg viewBox="0 0 22 22" class="ric"><rect x="3.5" y="5" width="15" height="11" rx="1.6"/><path d="M7.5 10.6 l2.4 2.4 l4.6 -4.6"/></svg>',   // classroom usability (board + check)
+        '<svg viewBox="0 0 22 22" class="ric"><circle cx="11" cy="11" r="8" pathLength="1"/><circle cx="11" cy="11" r="4.2" pathLength="1"/><circle class="fdot" cx="11" cy="11" r="1.7"/></svg>',   // learning outcomes (target)
+        '<svg viewBox="0 0 22 22" class="ric"><path pathLength="1" d="M11 3 L12.8 9.2 L19 11 L12.8 12.8 L11 19 L9.2 12.8 L3 11 L9.2 9.2 Z"/></svg>',                                                 // student engagement (spark)
+        '<svg viewBox="0 0 22 22" class="ric"><circle cx="11" cy="7.2" r="3.2" pathLength="1"/><path pathLength="1" d="M4.6 18 C4.6 12.8, 17.4 12.8, 17.4 18"/></svg>',                              // teacher adoption (person)
+        '<svg viewBox="0 0 22 22" class="ric"><rect x="3.2" y="4.8" width="15.6" height="11" rx="1.8" pathLength="1"/><path pathLength="1" d="M7.3 10.4 l2.5 2.5 l4.7 -4.7"/></svg>',                 // classroom usability (board + check)
       ];
-      const POS = ["r-top", "r-right", "r-bottom", "r-left"];
-      const labels = R.measures.map((m, i) =>
-        `<div class="rlabel ${POS[i]}">${ICONS[i]}<span>${m.text}</span></div>`).join("");
+      const cards = R.measures.map((m, i) =>
+        `<div class="pc-m"><span class="mico">${ICONS[i]}</span><span class="mtext">${m.text}</span></div>`).join("");
       const card = showCard(
-        `<div class="pilots-split">
-           <div class="pilots-left">
-             <div class="pl-kicker" data-l>${R.kicker}</div>
-             <h2 class="pl-head" data-l>${L.pre} <span class="grad">${L.date}</span><br>in ${L.where}</h2>
-             <div class="pl-partner" data-l><img class="pl-badge" src="images/ap_emblem.png" alt="Government of Andhra Pradesh" /><span>${L.partner}</span></div>
-           </div>
-           <div class="pilots-right">
-             <div class="pm-lead" data-l>${R.lead}</div>
-             <div class="radar">
-               <svg class="radar-svg" viewBox="0 0 300 300" aria-hidden="true">
-                 <g class="radar-grid">
-                   <polygon points="150,45 255,150 150,255 45,150"/>
-                   <polygon points="150,80 220,150 150,220 80,150"/>
-                   <polygon points="150,115 185,150 150,185 115,150"/>
-                   <line x1="150" y1="150" x2="150" y2="45"/><line x1="150" y1="150" x2="255" y2="150"/>
-                   <line x1="150" y1="150" x2="150" y2="255"/><line x1="150" y1="150" x2="45" y2="150"/>
-                 </g>
-                 <polygon class="radar-fill" points="150,45 255,150 150,255 45,150"/>
-                 <circle class="radar-node" cx="150" cy="45" r="6"/><circle class="radar-node" cx="255" cy="150" r="6"/>
-                 <circle class="radar-node" cx="150" cy="255" r="6"/><circle class="radar-node" cx="45" cy="150" r="6"/>
-               </svg>
-               ${labels}
-             </div>
-           </div>
+        `<div class="pilots-center">
+           <div class="pc-kicker">${R.kicker}</div>
+           <h2 class="pc-head">
+             <span class="hl hl-1">${L.pre} <span class="grad">${L.date}</span></span>
+             <span class="hl hl-2">in ${L.where}</span>
+           </h2>
+           <div class="pc-partner"><img class="pl-badge" src="images/ap_emblem.png" alt="Government of Andhra Pradesh" /><span>${L.partner}</span></div>
+           <div class="pc-lead">${R.lead}</div>
+           <div class="pc-measures">${cards}</div>
          </div>`, "pilots2-card");
-      const lefts = [...card.querySelectorAll("[data-l]")];
-      const grid = card.querySelector(".radar-grid");
-      const fill = card.querySelector(".radar-fill");
-      const nodes = [...card.querySelectorAll(".radar-node")];
-      const rlabels = [...card.querySelectorAll(".rlabel")];
+      const mrows = [...card.querySelectorAll(".pc-m")];
       const kfs = [];
-      lefts.forEach((el, i) => kfs.push({ at: 500 + i * 520, fn: () => el.classList.add("on") }));   // left block slides in
-      kfs.push({ at: 1100, fn: () => grid.classList.add("on") });     // radar grid
-      kfs.push({ at: 1800, fn: () => fill.classList.add("on") });     // coverage shape scales in from centre
-      nodes.forEach((n, i) => kfs.push({ at: 2100 + i * 170, fn: () => n.classList.add("on") }));
-      rlabels.forEach((el, i) => kfs.push({ at: 2300 + i * 260, fn: () => el.classList.add("on") }));
+      // paced build — each beat lands, settles, then the next arrives
+      const seq = [
+        [500, ".pc-kicker"],    // eyebrow
+        [1250, ".hl-1"],        // "Launching on September 5"
+        [1950, ".hl-2"],        // "in Andhra Pradesh"
+        [3000, ".pc-partner"],  // seal + partnership
+        [4000, ".pc-lead"],     // "What the pilots will measure"
+      ];
+      seq.forEach(([at, sel]) => { const el = card.querySelector(sel); kfs.push({ at, fn: () => el.classList.add("on") }); });
+      mrows.forEach((el, i) => kfs.push({ at: 4800 + i * 560, fn: () => el.classList.add("on") }));  // cards draw in one at a time
       return kfs;
     },
   });
@@ -927,11 +995,12 @@ function buildScenes() {
   return [
     sceneOpen(),
     sceneFoundation(),
-    sceneSutra("sutra1", S.principles),
+    sceneSutra("sutra1", S.principles, PEDAGOGY_CLOUD),
     scenePrinciplesIntro(),
     scenePrincipleChat("p1", REEL.p1),
     scenePrincipleChat("p2", REEL.p2),
     sceneScaffold(),
+    sceneScaffoldML(),
     sceneActive(),
     sceneSafety(),
     sceneToday(),
@@ -946,10 +1015,17 @@ function buildScenes() {
   ];
 }
 const CHAPTERS = ["Open", "The Foundation", "Interlude", "The Principles", "Constructivism",
-  "Dialogic Learning", "Scaffolding", "Activity-Based Learning", "Safe by design",
+  "Dialogic Learning", "Scaffolding", "In their language", "Activity-Based Learning", "Safe by design",
   "Where we are today", "Interlude", "Classroom Pilots",
   "Interlude", "Teachers need AI too", "Worksheets", "Lesson plans", "Admin assistant",
   "The promise"];
+// pedagogy word cloud drifting faintly behind the first Interlude
+const PEDAGOGY_CLOUD = [
+  { t: "inquiry-based learning", s: 1.5 }, { t: "formative assessment", s: 1.2 },
+  { t: "developmental scaffolding", s: 1.35 }, { t: "inquiry & reasoning", s: 1.15 },
+  { t: "conceptual understanding", s: 1.0 }, { t: "learning by doing", s: 0.95 },
+  { t: "rote learning", s: 1.1, strike: true },
+];
 // No language toggle: the Scaffolding beat shows English/Telugu/Hindi side by side, and the
 // admin beat renders Marathi–English + Telugu–English output inline.
 const HAS_ML = {};
@@ -960,6 +1036,9 @@ const ML_NAMES = {};
    ===================================================================== */
 const Music = {
   el: els.music, ctx: null, src: null, gain: null, ready: false, base: 0.55, _pendingSeek: null,
+  // music.mp3 (Saffron Ledger) opens with a silent lead-in; skip it so the score is
+  // audible right at the film's 0:00. Tweak this if the first beat is clipped or late.
+  intro: 2.0,
   init() {
     if (this.ctx) return;
     try {
@@ -975,11 +1054,15 @@ const Music = {
     this.init();
     this.el.volume = this.ready ? 1 : this.base;
     if (this.ready && this.gain) this.gain.gain.value = this.base;
-    if (this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(() => {});
-    this.seek(0); this.el.play().catch(() => {});
+    // Play synchronously inside the user gesture, then (if the AudioContext started
+    // suspended) resume it and re-seek/replay so the opening bar is never dropped —
+    // routing through a MediaElementSource is silent until the context is running.
+    const play = () => { this.seek(this.intro); this.el.play().catch(() => {}); };
+    play();
+    if (this.ctx && this.ctx.state !== "running") this.ctx.resume().then(play).catch(() => {});
   },
   seek(sec) { const d = this.el.duration; if (!d || isNaN(d)) { this._pendingSeek = sec; return; } try { this.el.currentTime = Math.max(0, sec) % d; } catch (e) {} },
-  seekToScene(i) { this.seek((Reel.sceneOffsets && Reel.sceneOffsets[i]) || 0); },
+  seekToScene(i) { this.seek(this.intro + ((Reel.sceneOffsets && Reel.sceneOffsets[i]) || 0)); },
   pause() { this.el.pause(); },
   resume() { if (this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(() => {}); this.el.play().catch(() => {}); },
   restart() { this.start(); this.unduck(); },
