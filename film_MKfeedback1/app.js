@@ -94,7 +94,7 @@ function typeKfs(el, text, start, step) {
 // flourish, on a calm backdrop. A watching voice that hands you into the next section.
 function sceneSutra(id, text, cloud) {
   return makeClockScene({
-    id, duration: 4200,
+    id, duration: cloud ? 5800 : 4200,
     enter() {
       clearCaption();
       const viz = buildMotes(14);
@@ -104,7 +104,8 @@ function sceneSutra(id, text, cloud) {
         `<div class="sutra-slide"><span class="sutra-rule"></span><div class="sutra-text">${text}</div></div>`,
         "sutra-card");
       const line = card.querySelector(".sutra-slide");
-      return [{ at: 450, fn: () => line.classList.add("on") }];
+      // when a word cloud is present, let it drift in and settle first, then bring the line in
+      return [{ at: cloud ? 1700 : 450, fn: () => line.classList.add("on") }];
     },
   });
 }
@@ -112,10 +113,14 @@ function sceneSutra(id, text, cloud) {
 function buildWordCloud(terms) {
   const c = document.createElement("div"); c.className = "wordcloud";
   // scattered anchor positions (%) — spread across the frame, clear of the centre line
-  const spots = [[15, 20], [67, 15], [41, 11], [86, 34], [9, 50], [60, 72], [28, 84], [85, 64]];
+  // kept out of the central band (x22–78, y38–62) so nothing collides with the interlude line
+  const spots = [
+    [38, 8], [63, 12], [16, 15], [84, 10], [50, 22], [27, 27], [73, 25], [9, 32],
+    [40, 70], [63, 84], [24, 86], [80, 72], [52, 91], [14, 75], [89, 83], [34, 79],
+  ];
   terms.forEach((term, i) => {
     const el = document.createElement("span");
-    el.className = "wc-term" + (term.strike ? " wc-strike" : "");
+    el.className = "wc-term" + (term.strike ? " wc-strike" : "") + (term.hot ? " wc-hot" : "");
     el.textContent = term.t;
     const p = spots[i % spots.length];
     el.style.left = p[0] + "%"; el.style.top = p[1] + "%";
@@ -191,7 +196,7 @@ const readMs = (t) => Math.max(1500, Math.min(4400, String(t).length * 34));
 function chatFrame(meta) {
   const wrap = document.createElement("div"); wrap.className = "chat-frame";
   wrap.innerHTML =
-    `<div class="chat-top"><span class="ct-mark">${BIRD}</span><span class="ct-name">TutorBot</span>` +
+    `<div class="chat-top"><span class="ct-mark">${BIRD}</span><span class="ct-name">Tutor<b>Bot</b></span>` +
     (meta.subject ? `<span class="ct-subj">${meta.subject}</span>` : "") + `</div>` +
     `<div class="chat-scroll"></div>`;
   return wrap;
@@ -476,8 +481,9 @@ function sceneScaffoldML() {
       });
       // footer: the same lesson reaches all 22 official Indian languages (native scripts)
       const strip = document.createElement("div"); strip.className = "lang-strip";
+      const row = LANGS_22.map((n) => `<span>${n}</span>`).join("");
       strip.innerHTML = `<div class="ls-lead"> NCF 2023 calls for teaching in a child's familiar language.</div>` +
-        `<div class="ls-names">${LANGS_22.map((n) => `<span>${n}</span>`).join("")}</div>`;
+        `<div class="ls-marquee"><div class="ls-track">${row}${row}</div></div>`;
       card.appendChild(strip);
       const all = st.kfs.concat(kfs);
       all.push({ at: t + 300, fn: () => strip.classList.add("on") });
@@ -663,8 +669,12 @@ function sceneToday() {
       clearCaption(); showVisual(buildMotes(16));
       setCaption(`${R.kicker}`, "", "");   // 1 — "Where we are today" lands first
       const card = showCard(
-        `<div class="check-list">${R.items.map((it) =>
-          `<div class="check-row"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M5 13 L10 18 L19 6"/></svg></span><span class="check-text">${it}</span></div>`).join("")}</div>`,
+        `<div class="check-list">${R.items.map((it) => {
+          const rocket = /pilot/i.test(it);   // the launch item gets a 🚀 instead of the green tick
+          const mark = rocket ? `<span class="check-box rocket">🚀</span>`
+            : `<span class="check-box"><svg viewBox="0 0 24 24"><path d="M5 13 L10 18 L19 6"/></svg></span>`;
+          return `<div class="check-row${rocket ? " is-rocket" : ""}">${mark}<span class="check-text">${it}</span></div>`;
+        }).join("")}</div>`,
         "check-card");
       const rows = [...card.querySelectorAll(".check-row")];
       // 2 — then the headline streams in; 3 — then the checklist ticks through
@@ -1021,10 +1031,22 @@ const CHAPTERS = ["Open", "The Foundation", "Interlude", "The Principles", "Cons
   "The promise"];
 // pedagogy word cloud drifting faintly behind the first Interlude
 const PEDAGOGY_CLOUD = [
-  { t: "inquiry-based learning", s: 1.5 }, { t: "formative assessment", s: 1.2 },
-  { t: "developmental scaffolding", s: 1.35 }, { t: "inquiry & reasoning", s: 1.15 },
-  { t: "conceptual understanding", s: 1.0 }, { t: "learning by doing", s: 0.95 },
-  { t: "rote learning", s: 1.1, strike: true },
+  { t: "inquiry-based learning", s: 1.55, hot: true },
+  { t: "conceptual understanding", s: 1.3, hot: true },
+  { t: "developmental scaffolding", s: 1.35 },
+  { t: "formative assessment", s: 1.1 },
+  { t: "inquiry & reasoning", s: 1.2 },
+  { t: "learning by doing", s: 1.0 },
+  { t: "critical thinking", s: 0.95 },
+  { t: "rote learning", s: 1.05, strike: true },
+  { t: "active learning", s: 1.15 },
+  { t: "metacognition", s: 1.0 },
+  { t: "guided discovery", s: 1.2, hot: true },
+  { t: "prior knowledge", s: 0.95 },
+  { t: "growth mindset", s: 1.05 },
+  { t: "multilingual tutoring", s: 1.15 },
+  { t: "socratic questioning", s: 1.0 },
+  { t: "differentiated instruction", s: 1.1 },
 ];
 // No language toggle: the Scaffolding beat shows English/Telugu/Hindi side by side, and the
 // admin beat renders Marathi–English + Telugu–English output inline.

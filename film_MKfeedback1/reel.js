@@ -67,7 +67,7 @@ window.REEL = {
     line: "Every interaction follows",
     punch: "evidence-based learning principles.",
     //sub: "Four principles, one consistent system — not four different ideas.",
-    dur: 11000,
+    dur: 9000,
   },
 
   // 4 — Principle 1 · Constructivism (chat: understand the learner first)
@@ -113,10 +113,10 @@ window.REEL = {
     //subject: "Number patterns · 2, 4, 8, 16 …",
     chat: [
       { who: "student", text: "Find the next number: 2, 4, 8, 16, …?" },
-      { who: "bot", q: true, text: "Look at how each number changes — are we adding the same amount each time, or multiplying?" },
+      { who: "bot", q: true, text: "Look at how each number changes, are we adding the same amount each time, or multiplying?" },
       { who: "student", win: true, text: "The gaps aren't equal, so it's not adding… each number doubles! The next is 32." },
     ],
-    caption: "One guiding question — and the student discovers the rule for themselves.",
+    caption: "One guiding question, and the student discovers the rule for themselves.",
     dur: 19500,
     // 7b — the SAME tutoring, in the child's own language (NCF 2023: mother-tongue learning).
     // Hindi & Telugu are illustrative translations — verify with a native speaker before production.
@@ -127,12 +127,12 @@ window.REEL = {
     langs: [
       { label: "हिन्दी", who: "Supriya", where: "Ratlam, MP", chat: [
         { who: "student", text: "अगली संख्या बताओ: 2, 4, 8, 16, …?" },
-        { who: "bot", q: true, text: "देखो हर संख्या कैसे बदलती है — हर बार बराबर जोड़ रहे हैं, या गुणा कर रहे हैं?" },
-        { who: "student", win: true, text: "अंतर बराबर नहीं है, तो जोड़ नहीं… हर संख्या दोगुनी हो रही है! तो अगली संख्या 32 है ?" },
+        { who: "bot", q: true, text: "देखो, हर संख्या कैसे बदल रही है। क्या हर बार बराबर जोड़ रहे हैं, या हर बार गुणा कर रहे हैं?" },
+        { who: "student", win: true, text: "अंतर तो बराबर नहीं है। मतलब जोड़ नहीं रहे हैं... हर संख्या दोगुनी हो रही है। तो अगली संख्या 32 होगी?" },
       ] },
       { label: "తెలుగు", who: "Ajay", where: "Kazipet,TS", chat: [
         { who: "student", text: "తర్వాత సంఖ్య చెప్పు: 2, 4, 8, 16, …?" },
-        { who: "bot", q: true, text: "ప్రతి సంఖ్య ఎలా మారుతుందో చూడు — ప్రతిసారి ఒకేలా కూడుతున్నామా, లేక గుణిస్తున్నామా?" },
+        { who: "bot", q: true, text: "ప్రతి సంఖ్య ఎలా మారుతుందో చూడు. ప్రతిసారి ఒకేలా కూడుతున్నామా, లేక గుణిస్తున్నామా?" },
         { who: "student", win: true, text: "తేడాలు సమానంగా లేవు, కాబట్టి కూడిక కాదు… ప్రతి సంఖ్య రెట్టింపు అవుతోంది! తర్వాతది 32 ?" },
       ] },
     ],
@@ -197,7 +197,7 @@ window.REEL = {
   // 8 — SECTION 3 · Where we are today (checklist)
   today: {
     section: "Section 3",
-    kicker: "Where we are today",
+    kicker: "Where we stand today",
     line: "The pedagogical groundwork",
     punch: "is complete.",
     items: [
