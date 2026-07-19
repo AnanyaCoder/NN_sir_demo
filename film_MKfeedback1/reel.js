@@ -91,15 +91,13 @@ window.REEL = {
     kicker: "Dialogic Learning",
     line: "Learning happens",
     punch: "through conversation.",
-    // bottom punchline: "Rote learning" strikes out → "Conceptual understanding"
-    transform: { from: "Rote learning", to: "Conceptual understanding" },
     //subject: "Photosynthesis · Class 7",
     chat: [
       { who: "student", text: "So plants make their food using sunlight." },
       { who: "bot", q: true, text: "Can you explain this back to me in your own words?" },
       { who: "student", text: "Leaves take in sunlight and… turn it into food for the plant?", win: true },
     ],
-    caption: "It doesn't check whether the student memorised the answer — it checks whether they understood it.",
+    caption: "<s>Rote learning</s> → conceptual understanding.",
     dur: 15500,
   },
 
@@ -120,10 +118,12 @@ window.REEL = {
     dur: 19500,
     // 7b — the SAME tutoring, in the child's own language (NCF 2023: mother-tongue learning).
     // Hindi & Telugu are illustrative translations — verify with a native speaker before production.
-    mlLine: "The same tutoring,",
-    mlPunch: "in the child's own language.",
-    mlCaption: "NCF 2023: a child understands best in their mother tongue.",
-    mlDur: 20000,
+    ml: {
+      line: "The same tutoring,",
+      punch: "in the child's own language.",
+      caption: "NCF 2023 calls for teaching in a child's familiar language.",
+      dur: 20000,
+    },
     langs: [
       { label: "हिन्दी", who: "Supriya", where: "Ratlam, MP", chat: [
         { who: "student", text: "अगली संख्या बताओ: 2, 4, 8, 16, …?" },

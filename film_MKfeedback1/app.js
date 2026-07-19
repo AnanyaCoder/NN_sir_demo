@@ -404,18 +404,7 @@ function scenePrincipleChat(id, R) {
       st.kfs.push({ at: chatStart - 400, fn: () => { cf.style.opacity = "1"; } });
       const { kfs, end } = chatKfs(cf.querySelector(".chat-scroll"), R.chat, chatStart);
       const all = st.kfs.concat(kfs);
-      if (R.transform) {
-        // bottom punchline: show "from", strike it through, then reveal "to"
-        const swap = document.createElement("div"); swap.className = "rote-swap";
-        swap.innerHTML = `<span class="rs-from">${R.transform.from}</span><span class="rs-arrow">→</span><span class="rs-to">${R.transform.to}</span>`;
-        card.appendChild(swap);
-        const from = swap.querySelector(".rs-from"), arrow = swap.querySelector(".rs-arrow"), to = swap.querySelector(".rs-to");
-        all.push({ at: end + 400, fn: () => swap.classList.add("on") });
-        all.push({ at: end + 1600, fn: () => from.classList.add("struck") });
-        all.push({ at: end + 2400, fn: () => { arrow.classList.add("on"); to.classList.add("on"); } });
-      } else {
-        all.push(calloutKf(card, R.caption, end + 300));
-      }
+      all.push(calloutKf(card, R.caption, end + 300));
       return all;
     },
   });
@@ -448,7 +437,7 @@ function sceneScaffold() {
 function sceneScaffoldML() {
   const R = REEL.p3;
   return makeClockScene({
-    id: "p3ml", duration: R.mlDur,
+    id: "p3ml", duration: R.ml.dur,
     enter() {
       clearCaption(); showVisual(buildMotes(18));
       setCaption(`${R.kicker}`, "", "");
@@ -462,7 +451,7 @@ function sceneScaffoldML() {
         wrap.appendChild(cf); return cf;
       });
       const scrolls = frames.map((f) => f.querySelector(".chat-scroll"));
-      const st = streamTitle(R.mlLine, R.mlPunch, 1300, 155);
+      const st = streamTitle(R.ml.line, R.ml.punch, 1300, 155);
       const chatStart = st.end + 1100;
       st.kfs.push({ at: chatStart - 400, fn: () => frames.forEach((f) => { f.style.opacity = "1"; }) });
       // both columns reveal the same turn together, paced by the longest text in that turn
@@ -480,12 +469,14 @@ function sceneScaffoldML() {
         }
       });
       // footer: the same lesson reaches all 22 official Indian languages (native scripts)
+      // NCF line as the standard 💡 caption callout (authored in reel.js → R.ml.caption)
+      const capKf = calloutKf(card, R.ml.caption, t + 300);
       const strip = document.createElement("div"); strip.className = "lang-strip";
       const row = LANGS_22.map((n) => `<span>${n}</span>`).join("");
-      strip.innerHTML = `<div class="ls-lead"> NCF 2023 calls for teaching in a child's familiar language.</div>` +
-        `<div class="ls-marquee"><div class="ls-track">${row}${row}</div></div>`;
+      strip.innerHTML = `<div class="ls-marquee"><div class="ls-track">${row}${row}</div></div>`;
       card.appendChild(strip);
       const all = st.kfs.concat(kfs);
+      all.push(capKf);
       all.push({ at: t + 300, fn: () => strip.classList.add("on") });
       return all;
     },

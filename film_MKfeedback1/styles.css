@@ -499,20 +499,6 @@ body[data-scene="turn"] .scrim{background:radial-gradient(120% 90% at 60% 30%, t
   background:var(--peach);border:1px solid var(--peach2);border-radius:12px;padding:11px 18px;
   opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
 .beat-cap.on{opacity:1;transform:none}
-/* "Rote learning" → strike → "Conceptual understanding" punchline */
-.rote-swap{display:inline-flex;align-items:center;gap:16px;font-family:var(--disp);font-weight:700;
-  font-size:clamp(20px,2.5cqw,32px);background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:12px 24px;box-shadow:0 16px 40px -28px rgba(18,32,56,.5);
-  opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
-.rote-swap.on{opacity:1;transform:none}
-.rs-from{position:relative;color:var(--ink2);transition:opacity .4s ease}
-.rs-from::after{content:"";position:absolute;left:-3px;top:54%;height:3px;width:0;background:var(--bad);border-radius:2px;transition:width .55s ease}
-.rs-from.struck{opacity:.5}
-.rs-from.struck::after{width:calc(100% + 6px)}
-.rs-arrow,.rs-to{opacity:0;transform:translateX(-8px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
-.rs-arrow{color:var(--ink2)}
-.rs-to{color:var(--accent);font-weight:800}
-.rs-arrow.on,.rs-to.on{opacity:1;transform:none}
 
 /* --- Section 1 · Foundation pipeline --- */
 .found-card{gap:22px}
@@ -770,7 +756,8 @@ body[data-scene="p3"] .center-card{top:20cqh}
 .cap-title{font-size:var(--fs-headline);max-width:32ch}
 /* the four principle beats carry larger headlines */
 body[data-scene="p1"] .cap-title,body[data-scene="p2"] .cap-title,
-body[data-scene="p3"] .cap-title,body[data-scene="p3ml"] .cap-title,body[data-scene="p4"] .cap-title{font-size:var(--fs-headline);max-width:26ch}
+body[data-scene="p3"] .cap-title,body[data-scene="p3ml"] .cap-title,body[data-scene="p4"] .cap-title,
+body[data-scene="today"] .cap-title{font-size:var(--fs-headline);max-width:26ch}
 .center-card{top:22cqh;bottom:9cqh}
 /* the text-heavy claim beats: slightly smaller settled headline */
 body[data-scene="foundation"] .cap-title,
@@ -1114,7 +1101,6 @@ body[data-scene="p3ml"] .center-card{top:25cqh;bottom:6cqh;gap:14px}
 .lang-strip{width:100%;text-align:center;flex:none;
   opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
 .lang-strip.on{opacity:1;transform:none}
-.ls-lead{font-size:calc(var(--fs-label) + 2px);letter-spacing:.1em;text-transform:uppercase;color:var(--saffron2);font-weight:800;margin-bottom:8px}
 /* one line, bigger, rolling slowly & seamlessly (track holds two copies) */
 .ls-marquee{width:100%;overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
